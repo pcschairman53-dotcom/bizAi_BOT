@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { cn } from './lib/utils';
 import { Message, ConsultingMode } from './types';
 import { chatWithAssistant } from './services/geminiService';
@@ -448,6 +449,7 @@ After submitting, message me on WhatsApp:
                     {msg.role === 'assistant' ? (
                       <div>
                         <Markdown
+                          remarkPlugins={[remarkGfm]}
                           components={{
                             ul: ({ children }) => <ul className="list-disc pl-4 space-y-1 my-3">{children}</ul>,
                             ol: ({ children }) => <ol className="list-decimal pl-4 space-y-1 my-3">{children}</ol>,
@@ -456,6 +458,16 @@ After submitting, message me on WhatsApp:
                             h2: ({ children }) => <h2 className="text-base font-serif italic font-bold text-zinc-900 mt-6 mb-3">{children}</h2>,
                             h3: ({ children }) => <h3 className="text-sm font-bold text-zinc-800 mt-4 mb-2 uppercase tracking-tight">{children}</h3>,
                             p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                            a: ({ children, href }) => (
+                              <a 
+                                href={href} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="text-brand-indigo hover:underline font-bold"
+                              >
+                                {children}
+                              </a>
+                            ),
                             strong: ({ children }) => <strong className="font-bold text-brand-indigo">{children}</strong>,
                             blockquote: ({ children }) => (
                               <blockquote className="border-l-2 border-brand-indigo/30 pl-4 py-1 italic text-zinc-500 my-4 bg-zinc-50/50">
@@ -471,6 +483,7 @@ After submitting, message me on WhatsApp:
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-6">
                             {[
                               { label: "🚀 Full Business Help", cmd: "https://docs.google.com/forms/d/e/1FAIpQLSd8uRsyJVbqqPmR1u3AEvQLj6QXn7klQ9KYTHMTGI2-t9N9Hw/viewform?usp=header", icon: Sparkles, isExternal: true },
+                              { label: "Chat on WhatsApp", cmd: "https://wa.me/919330457995?text=Hi%20I%20submitted%20the%20form", icon: MessageSquare, isExternal: true },
                               { label: "Get Clients in 7 Days", cmd: "/clients", icon: Target },
                               { label: "Grow Your Business", cmd: "/growth", icon: Briefcase },
                               { label: "Marketing Plan", cmd: "/marketing", icon: TrendingUp },
