@@ -117,6 +117,8 @@ interface AdminDashboardProps {
   activities: ActivityLog[];
   setMode: (mode: ConsultingMode) => void;
   onUpdateStatus: (leadId: string, newStatus: string) => void;
+  isSyncing: boolean;
+  setIsSyncing: (val: boolean) => void;
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -147,10 +149,10 @@ function LeadPipelineOverview({ stats }: { stats: DashboardStats }) {
   ];
 
   return (
-    <div className="bg-zinc-950 border border-zinc-800 p-6 rounded-lg relative overflow-hidden group">
+    <div className="bg-zinc-950 border border-zinc-800 p-4 md:p-6 rounded-lg relative overflow-hidden group">
       <div className="absolute inset-0 bg-gradient-to-br from-brand-indigo/5 to-transparent opacity-50" />
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
           <div>
             <h3 className="text-white font-bold tracking-tight flex items-center gap-2">
               <RefreshCcw size={18} className="text-brand-indigo" />
@@ -163,7 +165,7 @@ function LeadPipelineOverview({ stats }: { stats: DashboardStats }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           {steps.map((step, i) => (
             <motion.div 
               key={step.label}
@@ -289,11 +291,11 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
   );
 }
 
-function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus }: AdminDashboardProps) {
+function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isSyncing, setIsSyncing }: AdminDashboardProps) {
   return (
     <div className="space-y-6 pb-24">
       {/* Header Info */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
         <div>
            <h2 className="text-xl font-serif italic font-bold text-zinc-900 leading-none">Admin Control Center</h2>
            <p className="text-[11px] text-zinc-500 mt-2 uppercase tracking-widest font-bold">System Command & Infrastructure Monitoring</p>
@@ -304,8 +306,10 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus }: A
               <span className="text-[9px] font-bold text-white uppercase tracking-widest">System Active</span>
            </div>
            <div className="bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded flex items-center gap-2">
-              <RefreshCcw size={10} className="text-brand-indigo animate-spin-slow" />
-              <span className="text-[9px] font-bold text-white uppercase tracking-widest">AI Sync: 100%</span>
+              <RefreshCcw size={10} className={cn("text-brand-indigo", isSyncing && "animate-spin")} />
+              <span className="text-[9px] font-bold text-white uppercase tracking-widest leading-none">
+                {isSyncing ? "Syncing..." : "Data Stream Stable"}
+              </span>
            </div>
         </div>
       </div>
@@ -313,10 +317,10 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus }: A
       {/* Primary KPI Grid */}
       <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {[
-          { label: 'Total Leads', val: stats.totalLeads, icon: User, color: 'text-brand-indigo' },
-          { label: 'Active Pipeline', val: stats.pipeline.new + stats.pipeline.contacted + stats.pipeline.followup, icon: ActivityIcon, color: 'text-amber-500' },
-          { label: 'Converted', val: stats.pipeline.converted, icon: CheckCircle2, color: 'text-brand-emerald' },
-          { label: 'Growth Vector', val: '+24.5%', icon: Sparkles, color: 'text-brand-indigo' }
+              { label: 'Total Leads', val: stats.totalLeads, icon: User, color: 'text-brand-indigo' },
+              { label: 'Active Pipeline', val: stats.pipeline.new + stats.pipeline.contacted + stats.pipeline.followup, icon: ActivityIcon, color: 'text-amber-500' },
+              { label: 'Converted', val: stats.pipeline.converted, icon: CheckCircle2, color: 'text-brand-emerald' },
+              { label: 'Goal Progress', val: leads.length > 0 ? (stats.pipeline.converted / leads.length * 100).toFixed(0) + '%' : '0%', icon: Sparkles, color: 'text-brand-indigo' }
         ].map((kpi, i) => (
           <motion.div 
             key={i}
@@ -333,7 +337,11 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus }: A
             <div className="mt-3 h-1 bg-zinc-100 rounded-full overflow-hidden">
                <motion.div 
                 initial={{ width: 0 }}
-                animate={{ width: '70%' }}
+                animate={{ 
+                  width: typeof kpi.val === 'number' 
+                    ? `${Math.min(100, (kpi.val / (Math.max(1, stats.totalLeads))) * 100)}%` 
+                    : (String(kpi.val).includes('%') ? kpi.val : '100%') 
+                }}
                 className={cn("h-full", kpi.color.replace('text-', 'bg-'))} 
                />
             </div>
@@ -431,33 +439,40 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus }: A
             <Database size={12} className="text-zinc-400" />
           </div>
           <div className="flex-1 overflow-y-auto max-h-[460px] custom-scrollbar">
-            {leads.slice(0, 15).map((lead, i) => (
-              <div key={i} className="p-4 border-b border-zinc-50 last:border-0 hover:bg-zinc-50/50 transition-all group/lead">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex flex-col">
-                    <span className="text-[11px] font-bold text-zinc-800">{lead.name}</span>
-                    <span className="text-[9px] text-zinc-500 font-mono">{lead.service}</span>
+            {leads.length > 0 ? (
+              leads.slice(0, 15).map((lead, i) => (
+                <div key={i} className="p-4 border-b border-zinc-50 last:border-0 hover:bg-zinc-50/50 transition-all group/lead">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-bold text-zinc-800">{lead.name}</span>
+                      <span className="text-[9px] text-zinc-500 font-mono">{lead.service}</span>
+                    </div>
+                    <StatusBadge status={lead.status} />
                   </div>
-                  <StatusBadge status={lead.status} />
+                  <div className="flex items-center gap-2 mt-3">
+                    <select 
+                      value={lead.status}
+                      onChange={(e) => onUpdateStatus(lead.name, e.target.value)}
+                      className="text-[9px] font-bold bg-white border border-zinc-200 rounded px-2 py-1 outline-none hover:border-brand-indigo transition-colors"
+                    >
+                      <option value="NEW">MARK NEW</option>
+                      <option value="CONTACTED">CONTACTED</option>
+                      <option value="FOLLOW-UP">FOLLOW-UP</option>
+                      <option value="CONVERTED">CONVERTED</option>
+                      <option value="CLOSED">CLOSED</option>
+                    </select>
+                    <button className="p-1 text-zinc-300 hover:text-brand-indigo transition-colors">
+                      <ChevronRight size={14} />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 mt-3">
-                  <select 
-                    value={lead.status}
-                    onChange={(e) => onUpdateStatus(lead.name, e.target.value)}
-                    className="text-[9px] font-bold bg-white border border-zinc-200 rounded px-2 py-1 outline-none hover:border-brand-indigo transition-colors"
-                  >
-                    <option value="NEW">MARK NEW</option>
-                    <option value="CONTACTED">CONTACTED</option>
-                    <option value="FOLLOW-UP">FOLLOW-UP</option>
-                    <option value="CONVERTED">CONVERTED</option>
-                    <option value="CLOSED">CLOSED</option>
-                  </select>
-                  <button className="p-1 text-zinc-300 hover:text-brand-indigo transition-colors">
-                    <ChevronRight size={14} />
-                  </button>
-                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center h-full">
+                <Database size={24} className="text-zinc-200 mb-3" />
+                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Waiting for Cloud Stream...</span>
               </div>
-            ))}
+            )}
           </div>
           <button className="p-3 bg-zinc-50 text-[9px] font-bold text-zinc-500 uppercase hover:text-brand-indigo border-t border-zinc-100 transition-colors">
             Analyze Full Portfolio
@@ -471,7 +486,12 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus }: A
              <ActivityIcon size={14} className="text-brand-indigo" />
              Strategic Movement Log
           </h3>
-          <button className="text-[9px] font-bold text-brand-indigo uppercase">Sync Blockchain History</button>
+          <button 
+            onClick={() => setIsSyncing(true)}
+            className="text-[9px] font-bold text-brand-indigo uppercase hover:underline"
+          >
+            Force Sync Now
+          </button>
         </div>
         <div className="space-y-2">
           {activities.slice(0, 4).map((log) => (
@@ -506,28 +526,45 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus }: A
             <span className="text-[10px] text-zinc-500 font-mono text-center">Inbound Channel Performance</span>
           </div>
           <div className="space-y-4">
-            {[
-              { label: 'Google Search (Inbound)', value: 45, color: 'bg-brand-indigo' },
-              { label: 'LinkedIn Outreach', value: 30, color: 'bg-sky-500' },
-              { label: 'WhatsApp Referral', value: 15, color: 'bg-brand-emerald' },
-              { label: 'Direct Entry', value: 10, color: 'bg-zinc-700' },
-            ].map((source) => (
-              <div key={source.label} className="space-y-1.5">
-                <div className="flex justify-between text-[11px] font-bold">
-                  <span className="text-zinc-400">{source.label}</span>
-                  <span className="text-zinc-200">{source.value}%</span>
+            {leads.length > 0 ? (
+              // Group by service as a proxy for source
+              Object.entries(
+                leads.reduce((acc, lead) => {
+                  const s = lead.service || 'Other';
+                  acc[s] = (acc[s] || 0) + 1;
+                  return acc;
+                }, {} as Record<string, number>)
+              )
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 4)
+              .map(([label, count]) => {
+                const percentage = Math.round((count / leads.length) * 100);
+                return (
+                  <div key={label} className="space-y-1.5">
+                    <div className="flex justify-between text-[11px] font-bold">
+                      <span className="text-zinc-400 truncate pr-2">{label}</span>
+                      <span className="text-zinc-200">{percentage}%</span>
+                    </div>
+                    <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${percentage}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1, delay: 0.5 }}
+                        className="h-full bg-brand-indigo" 
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              [...Array(4)].map((_, i) => (
+                <div key={i} className="space-y-1.5 animate-pulse">
+                  <div className="h-3 bg-zinc-800 rounded w-1/2" />
+                  <div className="h-1.5 bg-zinc-800 rounded-full" />
                 </div>
-                <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${source.value}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className={cn("h-full", source.color)} 
-                  />
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -586,7 +623,24 @@ export default function App() {
   const [currentMode, setCurrentMode] = useState<ConsultingMode | null>('AI Smart Assistant');
   const [language, setLanguage] = useState<Language>('en');
   const [isLoading, setIsLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [leads, setLeads] = useState<Lead[]>([]);
   
   const [stats, setStats] = useState<DashboardStats>({
@@ -608,8 +662,11 @@ export default function App() {
   });
 
   const [activities, setActivities] = useState<ActivityLog[]>([
-    { id: '1', type: 'system', message: '📡 System Online - Waiting for real-time lead activity...', timestamp: new Date() },
+    { id: '1', type: 'system', message: '📡 System Initializing - Setting up real-time lead monitoring...', timestamp: new Date() },
   ]);
+
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
 
   const [isListening, setIsListening] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
@@ -696,90 +753,121 @@ export default function App() {
   // Live Dashboard - Real Google Sheets data polling
   useEffect(() => {
     let lastLeadName = '';
+    let isMounted = true;
     
     const updateDashboard = async () => {
-      const liveLeads = await fetchLiveLeads();
-      if (!liveLeads || liveLeads.length === 0) return;
-
-      setLeads(liveLeads);
-
-      // Process Stats from Real Data
-      const total = liveLeads.length;
-      let hot = 0;
-      let medium = 0;
-      let cold = 0;
-      let totalRevenue = 0;
+      if (isSyncing) return;
+      setIsSyncing(true);
       
-      const pipe = { new: 0, contacted: 0, followup: 0, converted: 0, closed: 0 };
+      try {
+        const liveLeads = await fetchLiveLeads();
+        if (!isMounted) return;
 
-      liveLeads.forEach(lead => {
-        // Normalizing status to new pipeline
-        const rawStatus = (lead.status || '').toUpperCase();
-        let status = rawStatus;
-        
-        // Automation Mapping
-        if (!status || status === 'NEW' || status === 'HOT' || status === 'MEDIUM' || status === 'COLD') status = 'NEW';
-        if (rawStatus.includes('CONTACTED')) status = 'CONTACTED';
-        if (rawStatus.includes('FOLLOW-UP') || rawStatus.includes('FOLLOWUP')) status = 'FOLLOW-UP';
-        if (rawStatus.includes('CONVERTED') || rawStatus.includes('CLIENT')) status = 'CONVERTED';
-        if (rawStatus.includes('CLOSED') || rawStatus.includes('LOST')) status = 'CLOSED';
-
-        const budget = Number(String(lead.budget).replace(/[^0-9.-]+/g, "")) || 0;
-        const rev = Number(String(lead.revenue).replace(/[^0-9.-]+/g, "")) || 0;
-
-        // Classification Logic for legacy dashboards
-        if (budget > 10000 || status === 'NEW') hot++;
-        else if (budget > 2000) medium++;
-        else cold++;
-
-        // Revenue Logic: Converted leads increase estimation weight
-        if (status === 'CONVERTED') {
-          totalRevenue += (rev || 15000); 
-        } else if (status === 'FOLLOW-UP') {
-          totalRevenue += (budget * 0.4); // 40% probability
-        } else {
-          totalRevenue += (budget * 0.1); // 10% baseline
+        if (!liveLeads || liveLeads.length === 0) {
+          setIsSyncing(false);
+          setLastSyncTime(new Date());
+          return;
         }
 
-        // Pipeline Logic
-        if (status === 'CONVERTED') pipe.converted++;
-        else if (status === 'FOLLOW-UP') pipe.followup++;
-        else if (status === 'CONTACTED') pipe.contacted++;
-        else if (status === 'CLOSED') pipe.closed++;
-        else pipe.new++;
-      });
+        setLeads(liveLeads);
 
-      setStats(prev => ({
-        ...prev,
-        totalLeads: total,
-        hotLeads: hot,
-        mediumLeads: medium,
-        coldLeads: cold,
-        revenueEstimate: totalRevenue || (hot * 18500),
-        conversionRate: total > 0 ? parseFloat(((pipe.converted / total) * 100).toFixed(1)) : 0,
-        automationStatus: 'OPERATIONAL',
-        heatmap: [...prev.heatmap.slice(1), Math.min(100, (hot / (total || 1)) * 200)],
-        pipeline: pipe
-      }));
+        // Process Stats from Real Data
+        const total = liveLeads.length;
+        let hot = 0;
+        let totalRevenueValue = 0;
+        
+        const pipe = { new: 0, contacted: 0, followup: 0, converted: 0, closed: 0 };
 
-      // Find if there's a brand new lead to log
-      const latestLead = liveLeads[0];
-      if (latestLead && latestLead.name !== lastLeadName) {
-        lastLeadName = latestLead.name;
-        setActivities(prev => [{
-          id: Date.now().toString(),
-          type: 'lead' as const,
-          message: `Lead Received: ${latestLead.name} (${latestLead.service})`,
-          timestamp: new Date(),
-          status: Number(String(latestLead.budget).replace(/[^0-9.-]+/g, "")) > 10000 ? 'HOT' : 'NEW'
-        }, ...prev].slice(0, 10));
+        liveLeads.forEach(lead => {
+          // Normalizing status to new pipeline
+          const rawStatus = (lead.status || '').toUpperCase();
+          let status = rawStatus;
+          
+          if (!status || status === 'NEW' || status === 'HOT' || status === 'MEDIUM' || status === 'COLD') status = 'NEW';
+          if (rawStatus.includes('CONTACTED')) status = 'CONTACTED';
+          if (rawStatus.includes('FOLLOW-UP') || rawStatus.includes('FOLLOWUP')) status = 'FOLLOW-UP';
+          if (rawStatus.includes('CONVERTED') || rawStatus.includes('CLIENT')) status = 'CONVERTED';
+          if (rawStatus.includes('CLOSED') || rawStatus.includes('LOST')) status = 'CLOSED';
+
+          const budget = Number(String(lead.budget).replace(/[^0-9.-]+/g, "")) || 0;
+          const rev = Number(String(lead.revenue).replace(/[^0-9.-]+/g, "")) || 0;
+
+          if (budget > 10000 || status === 'NEW') hot++;
+
+          if (status === 'CONVERTED') {
+            totalRevenueValue += (rev || 15000); 
+          } else if (status === 'FOLLOW-UP') {
+            totalRevenueValue += (budget * 0.4); 
+          } else {
+            totalRevenueValue += (budget * 0.1); 
+          }
+
+          if (status === 'CONVERTED') pipe.converted++;
+          else if (status === 'FOLLOW-UP') pipe.followup++;
+          else if (status === 'CONTACTED') pipe.contacted++;
+          else if (status === 'CLOSED') pipe.closed++;
+          else pipe.new++;
+        });
+
+        setStats(prev => ({
+          ...prev,
+          totalLeads: total,
+          hotLeads: hot,
+          revenueEstimate: totalRevenueValue || (hot * 18500),
+          conversionRate: total > 0 ? parseFloat(((pipe.converted / total) * 100).toFixed(1)) : 0,
+          automationStatus: 'OPERATIONAL',
+          heatmap: [...prev.heatmap.slice(1), Math.min(100, (hot / (total || 1)) * 200)],
+          pipeline: pipe
+        }));
+
+        // Activity Feed: New Lead detection
+        const latestLead = liveLeads[0];
+        if (latestLead && latestLead.name !== lastLeadName) {
+          if (lastLeadName !== '') { // Only log if not first load
+            setActivities(prev => [{
+              id: Date.now().toString(),
+              type: 'lead' as const,
+              message: `Live Lead Detected: ${latestLead.name} (${latestLead.service})`,
+              timestamp: new Date(),
+              status: Number(String(latestLead.budget).replace(/[^0-9.-]+/g, "")) > 10000 ? 'HOT' : 'NEW'
+            }, ...prev].slice(0, 10));
+          } else {
+            // Log sync success on first load
+            setActivities(prev => [{
+              id: 'initial-sync',
+              type: 'system' as const,
+              message: `📡 Sync Successful: ${liveLeads.length} leads retrieved from Google Sheets.`,
+              timestamp: new Date()
+            }, ...prev].slice(0, 10));
+          }
+          lastLeadName = latestLead.name;
+        }
+
+        setLastSyncTime(new Date());
+      } catch (error) {
+        console.error('Sync Error:', error);
+        if (isMounted) {
+          setActivities(prev => [{
+            id: 'error-' + Date.now(),
+            type: 'system' as const,
+            message: `⚠️ Sync Failed: Connection to Google Script interrupted.`,
+            timestamp: new Date()
+          }, ...prev].slice(0, 10));
+        }
+      } finally {
+        if (isMounted) {
+          setIsSyncing(false);
+        }
       }
     };
 
     updateDashboard(); // Initial fetch
     const pulse = setInterval(updateDashboard, 10000); // 10s refresh
 
-    return () => clearInterval(pulse);
+    return () => {
+      isMounted = false;
+      clearInterval(pulse);
+    };
   }, []);
 
   const handleUpdateLeadStatus = (leadName: string, newStatus: any) => {
@@ -1069,7 +1157,7 @@ Business analytics overview:
   };
 
   return (
-    <div className="flex h-screen bg-[#F0F1F4] text-zinc-900 font-sans selection:bg-brand-indigo/10 overflow-hidden relative">
+    <div className="flex bg-[#F0F1F4] text-zinc-900 font-sans selection:bg-brand-indigo/10 overflow-x-hidden min-h-screen w-full relative">
       {/* Mobile Sidebar Overlay Backdrop */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -1091,7 +1179,7 @@ Business analytics overview:
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="w-72 md:w-80 bg-zinc-950 border-r border-zinc-800 flex flex-col z-50 fixed lg:relative h-full text-zinc-400 shadow-2xl lg:shadow-none"
+            className="w-72 md:w-80 bg-zinc-950 border-r border-zinc-800 flex flex-col z-50 fixed lg:sticky lg:top-0 lg:h-screen text-zinc-400 shadow-2xl lg:shadow-none"
           >
             <div className="p-6 md:p-8 pb-4 flex items-center justify-between border-b border-zinc-800/50 relative">
                {/* Close button for mobile sidebar */}
@@ -1312,14 +1400,16 @@ Business analytics overview:
           </div>
           <div className="flex items-center gap-2 md:gap-6">
              <div className="hidden lg:flex items-center gap-8">
-               <div className="flex flex-col items-end">
-                 <span className="text-[8px] uppercase font-bold text-zinc-400 tracking-widest">Latency</span>
-                 <span className="text-[10px] font-mono text-brand-emerald">12ms</span>
-               </div>
-               <div className="flex flex-col items-end">
-                 <span className="text-[8px] uppercase font-bold text-zinc-400 tracking-widest">Node Status</span>
-                 <span className="text-[10px] font-mono text-zinc-600">Syncing...</span>
-               </div>
+              <div className="flex flex-col items-end">
+                <span className="text-[8px] uppercase font-bold text-zinc-400 tracking-widest">Pipeline Health</span>
+                <span className="text-[10px] font-mono text-brand-emerald">99.8%</span>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-[8px] uppercase font-bold text-zinc-400 tracking-widest">Network Status</span>
+                <span className={cn("text-[10px] font-mono", leads.length > 0 ? "text-brand-emerald" : "text-amber-500")}>
+                  {leads.length > 0 ? "STABLE" : "SYNCING"}
+                </span>
+              </div>
              </div>
              <button 
               onClick={() => setMessages([messages[0]])}
@@ -1336,7 +1426,7 @@ Business analytics overview:
 
         {/* Console Viewport */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-8 space-y-12 bg-[#fafafa]">
-          <div className="max-w-4xl mx-auto space-y-12 pb-48">
+          <div className="max-w-7xl mx-auto space-y-12 pb-48">
             {currentMode === 'Admin Control Center' ? (
               <AdminDashboard 
                 stats={stats} 
@@ -1344,6 +1434,8 @@ Business analytics overview:
                 activities={activities} 
                 setMode={handleModeSelection}
                 onUpdateStatus={handleUpdateLeadStatus}
+                isSyncing={isSyncing}
+                setIsSyncing={setIsSyncing}
               />
             ) : (
               <>
@@ -1363,68 +1455,101 @@ Business analytics overview:
                       <Activity size={20} />
                     </div>
                     <div>
-                      <h2 className="text-white font-bold tracking-tight">Live AI Growth Dashboard</h2>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Real-time Data: Connected</p>
+                      <h2 className="text-white font-bold tracking-tight">BizAI Enterprise Dashboard</h2>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">
+                        {isSyncing ? "Syncing with Sheets..." : `Live Sync: ${lastSyncTime ? lastSyncTime.toLocaleTimeString() : 'Ready'}`}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 text-white">
-                     <div className="flex items-center gap-1.5 bg-zinc-900 px-3 py-1.5 rounded border border-zinc-800">
-                        <span className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" />
-                        <span className="text-[10px] font-bold uppercase tracking-tight">System Online</span>
+                     <div className="flex items-center gap-2 bg-zinc-900 px-3 py-1.5 rounded border border-zinc-800">
+                        <div className={cn("w-2 h-2 rounded-full", isSyncing ? "bg-brand-indigo animate-spin" : "bg-brand-emerald animate-pulse")} />
+                        <span className="text-[10px] font-bold uppercase tracking-tight">
+                          {isSyncing ? "Refreshing..." : "System Live"}
+                        </span>
                      </div>
                   </div>
                 </div>
 
-                <div id="stats-grid" className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 relative">
-                  {stats.totalLeads === 0 && (
-                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] rounded border border-zinc-800/50">
-                       <div className="text-center animate-pulse">
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-1">Waiting for real lead data...</span>
-                          <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-tighter">📡 Listening for Google Forms activity</span>
+                <div id="stats-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 relative">
+                  {(stats.totalLeads === 0 && !isSyncing) && (
+                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-zinc-950/60 backdrop-blur-[4px] rounded border border-zinc-800/50">
+                       <div className="text-center">
+                          <Activity size={32} className="text-brand-indigo mx-auto mb-3 animate-bounce" />
+                          <span className="text-xs font-bold text-white uppercase tracking-widest block mb-1">Authenticating Data Stream...</span>
+                          <span className="text-[9px] font-mono text-zinc-400 uppercase tracking-tighter block mb-4">Connect Google Sheet to unlock live metrics</span>
+                          <button 
+                            onClick={() => window.open('https://wa.me/919330457995', '_blank')}
+                            className="px-4 py-2 bg-brand-indigo text-white text-[10px] font-bold uppercase rounded hover:bg-indigo-600 transition-all"
+                          >
+                            Get Setup Instructions
+                          </button>
                        </div>
                     </div>
                   )}
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50">
+                  {isSyncing && stats.totalLeads === 0 && (
+                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] rounded border border-zinc-800/50">
+                       <div className="text-center">
+                          <div className="w-8 h-8 border-2 border-brand-indigo border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block">Connecting to Cloud Matrix...</span>
+                       </div>
+                    </div>
+                  )}
+                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50 relative overflow-hidden group/card shadow-lg shadow-indigo-900/5 min-h-[100px] flex flex-col justify-center">
+                    {isSyncing && stats.totalLeads === 0 && <div className="absolute inset-0 bg-zinc-900 z-10 flex flex-col p-4 space-y-2"><div className="h-2 bg-zinc-800 rounded w-1/3 animate-pulse" /><div className="h-6 bg-zinc-800 rounded w-2/3 animate-pulse" /><div className="h-2 bg-zinc-800 rounded w-1/2 animate-pulse mt-auto" /></div>}
                     <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 block">Total Leads</span>
                     <span className="text-xl font-mono font-bold text-white leading-none">{stats.totalLeads.toLocaleString()}</span>
                     <div className="flex gap-2 mt-2">
-                       <span className="text-[8px] font-bold text-brand-emerald px-1.5 py-0.5 bg-brand-emerald/10 rounded uppercase">
-                          {stats.totalLeads > 0 ? `+${Math.floor(Math.random() * 5)} Today` : "Ready"}
+                       <span className={cn(
+                         "text-[8px] font-bold px-1.5 py-0.5 rounded uppercase",
+                         stats.totalLeads > 0 ? "text-brand-emerald bg-brand-emerald/10" : "text-zinc-600 bg-zinc-800"
+                       )}>
+                          {stats.totalLeads > 0 ? `+${Math.floor(stats.totalLeads * 0.1)} Potential` : "Stream Listening"}
                        </span>
                     </div>
                   </div>
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50">
+                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50 relative overflow-hidden group/card shadow-lg shadow-emerald-900/5 min-h-[100px] flex flex-col justify-center">
+                    {isSyncing && stats.totalLeads === 0 && <div className="absolute inset-0 bg-zinc-900 z-10 flex flex-col p-4 space-y-2"><div className="h-2 bg-zinc-800 rounded w-1/3 animate-pulse" /><div className="h-6 bg-zinc-800 rounded w-2/3 animate-pulse" /><div className="h-2 bg-zinc-800 rounded w-full animate-pulse mt-auto" /></div>}
                     <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 block">Conversion Rate</span>
                     <div className="flex items-end gap-2">
                       <span className="text-xl font-mono font-bold text-brand-emerald leading-none">{stats.conversionRate}%</span>
-                      <TrendingUp size={14} className="text-brand-emerald mb-1" />
+                      <TrendingUp size={14} className="text-brand-emerald mb-1 transition-transform group-hover/card:translate-y-[-2px]" />
+                    </div>
+                    <div className="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                       <motion.div 
+                         initial={{ width: 0 }}
+                         animate={{ width: `${stats.conversionRate}%` }}
+                         className="h-full bg-brand-emerald"
+                       />
                     </div>
                   </div>
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50">
+                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50 relative overflow-hidden group/card shadow-lg shadow-indigo-900/5 min-h-[100px] flex flex-col justify-center">
+                    {isSyncing && stats.totalLeads === 0 && <div className="absolute inset-0 bg-zinc-900 z-10 flex flex-col p-4 space-y-2"><div className="h-2 bg-zinc-800 rounded w-1/3 animate-pulse" /><div className="h-6 bg-zinc-800 rounded w-2/3 animate-pulse" /><div className="h-4 bg-zinc-800 rounded w-1/2 animate-pulse mt-auto" /></div>}
                     <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1 block">Revenue Est.</span>
                     <span className="text-xl font-mono font-bold text-brand-indigo leading-none">₹{(stats.revenueEstimate / 1000000).toFixed(2)}M</span>
                     <div className="mt-2 flex items-center justify-between">
                        <p className="text-[8px] text-zinc-500 uppercase font-bold tracking-tighter">Proj. ROI: 4.8x</p>
                        <div className="flex gap-0.5 h-3 items-end">
-                          {[30, 50, 40, 70, 60, 90].map((h, i) => (
-                            <div key={i} className="w-1 bg-brand-indigo/30 rounded-t-xs" style={{ height: `${h}%` }} />
+                          {(stats.heatmap && stats.heatmap.length > 0 ? stats.heatmap : [30, 50, 40, 70, 60, 90]).map((h, i) => (
+                             <div key={i} className="w-1 bg-brand-indigo/30 rounded-t-xs" style={{ height: `${Math.max(10, h)}%` }} />
                           ))}
                        </div>
                     </div>
                   </div>
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50">
-                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 block">Agent Status</span>
-                    <div className="flex flex-col gap-1 mt-1">
+                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50 relative overflow-hidden group/card min-h-[100px] flex flex-col justify-center">
+                    {isSyncing && stats.totalLeads === 0 && <div className="absolute inset-0 bg-zinc-900 z-10 flex flex-col p-4 space-y-2"><div className="h-2 bg-zinc-800 rounded w-1/3 animate-pulse" /><div className="h-3 bg-zinc-800 rounded w-full animate-pulse" /><div className="h-3 bg-zinc-800 rounded w-full animate-pulse" /></div>}
+                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 block">Agent Connectivity</span>
+                    <div className="flex flex-col gap-1.5 mt-1">
                        <div className="flex items-center justify-between text-[8px] font-bold">
-                          <span className="text-zinc-400">SALES AI</span>
+                          <span className="text-zinc-400">SALES ENGINE</span>
                           <span className={cn(stats.totalLeads > 0 ? "text-brand-emerald" : "text-amber-500")}>
-                             {stats.totalLeads > 0 ? "ACTIVE" : "WAITING"}
+                             {stats.totalLeads > 0 ? "ACTIVE" : "PENDING"}
                           </span>
                        </div>
                        <div className="flex items-center justify-between text-[8px] font-bold">
-                          <span className="text-zinc-400">CRM AI</span>
-                          <span className={cn(stats.totalLeads > 0 ? "text-brand-emerald" : "text-zinc-500")}>
-                             {stats.totalLeads > 0 ? "MONITORING" : "IDLE"}
+                          <span className="text-zinc-400">DATA SYNC</span>
+                          <span className={cn(isSyncing ? "text-brand-indigo animate-pulse" : "text-brand-emerald")}>
+                             {isSyncing ? "UPDATING" : "STABLE"}
                           </span>
                        </div>
                     </div>
@@ -1491,18 +1616,19 @@ Business analytics overview:
                                { label: 'Captured Leads', val: stats.totalLeads, color: 'bg-brand-indigo' },
                                { label: 'Converted', val: stats.pipeline.converted, color: 'bg-brand-emerald' }
                              ].map((step, idx) => (
-                               <div key={step.label} className="group/funnel">
-                                  <div className="flex justify-between text-[8px] font-bold text-zinc-500 uppercase mb-1">
-                                     <span>{step.label}</span>
-                                     <span className="text-white font-mono">{step.val.toLocaleString()}</span>
-                                  </div>
-                                  <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                                     <div 
-                                        className={cn("h-full transition-all duration-1000", step.color)} 
-                                        style={{ width: `${Math.min(100, (step.val / (stats.totalLeads * 4 || 1)) * 100)}%` }} 
-                                     />
-                                  </div>
-                               </div>
+                              <div key={idx} className="group/funnel">
+                                 <div className="flex justify-between text-[8px] font-bold text-zinc-500 uppercase mb-1">
+                                    <span>{step.label}</span>
+                                    <span className="text-white font-mono">{step.val.toLocaleString()}</span>
+                                 </div>
+                                 <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                                    <motion.div 
+                                       initial={{ width: 0 }}
+                                       animate={{ width: `${Math.min(100, (step.val / (Math.max(1, stats.totalLeads) * 4 || 1)) * 100)}%` }} 
+                                       className={cn("h-full transition-all duration-1000", step.color)} 
+                                    />
+                                 </div>
+                              </div>
                              ))}
                           </div>
                        </div>
@@ -1559,7 +1685,17 @@ Business analytics overview:
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-zinc-900/10">
-                        {leads.length > 0 ? (
+                        {isSyncing && leads.length === 0 ? (
+                          [...Array(5)].map((_, i) => (
+                            <tr key={i} className="animate-pulse">
+                              <td className="py-3 pr-4"><div className="h-4 bg-zinc-900/20 rounded w-24 mb-1" /><div className="h-2 bg-zinc-900/10 rounded w-16" /></td>
+                              <td className="py-3 pr-4 hidden sm:table-cell"><div className="h-3 bg-zinc-900/10 rounded w-20" /></td>
+                              <td className="py-3 pr-4 hidden md:table-cell"><div className="h-3 bg-zinc-900/10 rounded w-16" /></td>
+                              <td className="py-3 pr-4"><div className="h-4 bg-zinc-900/20 rounded w-12" /></td>
+                              <td className="py-3 text-right"><div className="h-4 bg-zinc-900/20 rounded w-16 ml-auto" /></td>
+                            </tr>
+                          ))
+                        ) : leads.length > 0 ? (
                           leads.slice(0, 5).map((lead, i) => (
                             <tr key={i} className="group hover:bg-zinc-900/20 transition-colors">
                               <td className="py-3 pr-4">
@@ -1588,7 +1724,15 @@ Business analytics overview:
                         ) : (
                           <tr>
                             <td colSpan={5} className="py-8 text-center text-zinc-600 font-mono uppercase tracking-widest italic">
-                               Waiting for real-time lead data sync...
+                               <div className="flex flex-col items-center gap-2 text-center">
+                                  <Activity className="text-zinc-600 animate-pulse" size={16} />
+                                  <span className="text-zinc-600 font-mono uppercase tracking-widest text-[9px] italic">
+                                     No Data Synchronized
+                                  </span>
+                                  <span className="text-zinc-700 font-mono text-[8px] uppercase">
+                                     Check your Google Script connection
+                                  </span>
+                               </div>
                             </td>
                           </tr>
                         )}
