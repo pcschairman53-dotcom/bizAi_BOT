@@ -467,10 +467,16 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
                   </div>
                 </div>
               ))
+            ) : isSyncing ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center h-full">
+                <RefreshCcw size={24} className="text-brand-indigo mb-3 animate-spin" />
+                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Synchronizing Matrix...</span>
+              </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center h-full">
                 <Database size={24} className="text-zinc-200 mb-3" />
-                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Waiting for Cloud Stream...</span>
+                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">No Active Cloud Streams</span>
+                <p className="text-[8px] text-zinc-500 mt-1 uppercase">Check Google Script connectivity</p>
               </div>
             )}
           </div>
@@ -1472,21 +1478,6 @@ Business analytics overview:
                 </div>
 
                 <div id="stats-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 relative">
-                  {(stats.totalLeads === 0 && !isSyncing) && (
-                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-zinc-950/60 backdrop-blur-[4px] rounded border border-zinc-800/50">
-                       <div className="text-center">
-                          <Activity size={32} className="text-brand-indigo mx-auto mb-3 animate-bounce" />
-                          <span className="text-xs font-bold text-white uppercase tracking-widest block mb-1">Authenticating Data Stream...</span>
-                          <span className="text-[9px] font-mono text-zinc-400 uppercase tracking-tighter block mb-4">Connect Google Sheet to unlock live metrics</span>
-                          <button 
-                            onClick={() => window.open('https://wa.me/919330457995', '_blank')}
-                            className="px-4 py-2 bg-brand-indigo text-white text-[10px] font-bold uppercase rounded hover:bg-indigo-600 transition-all"
-                          >
-                            Get Setup Instructions
-                          </button>
-                       </div>
-                    </div>
-                  )}
                   {isSyncing && stats.totalLeads === 0 && (
                     <div className="absolute inset-0 z-20 flex items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] rounded border border-zinc-800/50">
                        <div className="text-center">

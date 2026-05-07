@@ -19,21 +19,26 @@ async function startServer() {
   app.get("/api/leads", async (req, res) => {
     const API_URL = 'https://script.google.com/macros/s/AKfycbz7d8KTg4n41jXe4FJfsweQOvK94EmqG4OACdCsbtUXjVGo1YVEWcjJI-UUQjj6BleDuA/exec';
     
-    const fetchWithRetry = async (retries = 2): Promise<any> => {
+    const fetchWithRetry = async (retries = 3): Promise<any> => {
       try {
         console.log(`Fetching leads from Google Script (Retries left: ${retries})...`);
         const response = await axios.get(API_URL, {
           maxRedirects: 10,
           timeout: 60000,
           headers: {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
           }
         });
         return response.data;
       } catch (error: any) {
-        if (retries > 0 && (!error.response || error.response.status >= 500 || error.code === 'ECONNABORTED')) {
-          console.log(`Retrying fetch due to error: ${error.message} (Retries remaining: ${retries})`);
-          await new Promise(resolve => setTimeout(resolve, 2000));
+        // Retry on 500, 502, 503, 504 and timeout errors
+        const isRetryable = !error.response || (error.response.status >= 500) || error.code === 'ECONNABORTED';
+        
+        if (retries > 0 && isRetryable) {
+          const delay = (4 - retries) * 3000; // Exponential-ish backoff: 3s, 6s, 9s
+          console.log(`Retrying fetch in ${delay}ms due to error: ${error.message} (Status: ${error.response?.status || 'TIMEOUT'})`);
+          await new Promise(resolve => setTimeout(resolve, delay));
           return fetchWithRetry(retries - 1);
         }
         throw error;
