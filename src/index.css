@@ -6,31 +6,103 @@
   --font-serif: "Playfair Display", serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --color-brand-indigo: #4f46e5;
+  --color-brand-indigo: #6366f1;
   --color-brand-emerald: #10b981;
   --color-brand-zinc: #18181b;
 }
 
 @layer base {
   * {
-    @apply border-zinc-200 outline-none;
+    @apply border-zinc-800 outline-none;
   }
   body {
-    @apply bg-[#fafafa] text-zinc-900;
+    @apply bg-zinc-950 text-zinc-100;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     min-height: 100vh;
     width: 100%;
     overflow-x: hidden;
   }
+
+  input,
+  textarea,
+  .command-input,
+  .chat-input,
+  .prompt-input {
+    color: #ffffff !important;
+    background: #111827 !important;
+    border: 1px solid #7c3aed !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    transition: all 0.2s ease-in-out !important;
+    outline: none !important;
+  }
+  
+  input:focus,
+  textarea:focus,
+  .command-input:focus,
+  .chat-input:focus,
+  .prompt-input:focus {
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.5) !important;
+    border-color: #a78bfa !important;
+    background: #1f2937 !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder,
+  .command-input::placeholder,
+  .chat-input::placeholder,
+  .prompt-input::placeholder {
+    color: #9ca3af !important;
+    opacity: 0.8;
+  }
 }
 
-/* Custom scollbar for a cleaner technical look */
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-zinc-200 rounded-full hover:bg-zinc-300 transition-colors;
+@layer utilities {
+  .glass-card {
+    @apply bg-zinc-900/40 backdrop-blur-md border border-white/5 shadow-xl;
+  }
+  .neon-glow-indigo {
+    box-shadow: 0 0 20px -5px rgba(99, 102, 241, 0.4);
+  }
+  .neon-glow-emerald {
+    box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.4);
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors;
+  }
+
+  .toast-enter {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  .toast-enter-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 0.3s ease-out;
+  }
+  .toast-exit {
+    opacity: 1;
+  }
+  .toast-exit-active {
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+  }
+
+  @keyframes spinner {
+    to {transform: rotate(360deg);}
+  }
+  .loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spinner 0.6s linear infinite;
+  }
 }

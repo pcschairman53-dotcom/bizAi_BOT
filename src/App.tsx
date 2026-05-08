@@ -34,7 +34,9 @@ import {
   CheckCircle2,
   ArrowRight,
   XCircle,
-  ChevronRight
+  ChevronRight,
+  Layers,
+  Phone
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
@@ -141,53 +143,55 @@ function StatusBadge({ status }: { status: string }) {
 
 function LeadPipelineOverview({ stats }: { stats: DashboardStats }) {
   const steps = [
-    { label: 'New Leads', count: stats.pipeline.new, color: 'text-zinc-500', bg: 'bg-zinc-50', icon: Sparkles },
-    { label: 'Contacted', count: stats.pipeline.contacted, color: 'text-sky-500', bg: 'bg-sky-50', icon: MessageSquare },
-    { label: 'Follow-Ups', count: stats.pipeline.followup, color: 'text-amber-500', bg: 'bg-amber-50', icon: Clock },
-    { label: 'Converted', count: stats.pipeline.converted, color: 'text-brand-emerald', bg: 'bg-emerald-50', icon: CheckCircle2 },
-    { label: 'Closed', count: stats.pipeline.closed, color: 'text-rose-500', bg: 'bg-rose-50', icon: XCircle },
+    { label: 'New Leads', count: stats.pipeline.new, color: 'text-zinc-500', bg: 'bg-zinc-800/30', icon: Sparkles },
+    { label: 'Contacted', count: stats.pipeline.contacted, color: 'text-sky-500', bg: 'bg-sky-500/10', icon: MessageSquare },
+    { label: 'Follow-Ups', count: stats.pipeline.followup, color: 'text-amber-500', bg: 'bg-amber-500/10', icon: Clock },
+    { label: 'Converted', count: stats.pipeline.converted, color: 'text-brand-emerald', bg: 'bg-emerald-500/10', icon: CheckCircle2 },
+    { label: 'Closed', count: stats.pipeline.closed, color: 'text-rose-500', bg: 'bg-rose-500/10', icon: XCircle },
   ];
 
   return (
-    <div className="bg-zinc-950 border border-zinc-800 p-4 md:p-6 rounded-lg relative overflow-hidden group">
-      <div className="absolute inset-0 bg-gradient-to-br from-brand-indigo/5 to-transparent opacity-50" />
+    <div className="glass-card neon-glow-indigo p-4 md:p-8 rounded-2xl relative overflow-hidden group">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-indigo/10 to-transparent opacity-50" />
       <div className="relative z-10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
           <div>
-            <h3 className="text-white font-bold tracking-tight flex items-center gap-2">
-              <RefreshCcw size={18} className="text-brand-indigo" />
+            <h3 className="text-white text-lg font-bold tracking-tight flex items-center gap-3">
+              <div className="w-8 h-8 bg-brand-indigo/20 rounded-lg flex items-center justify-center">
+                <RefreshCcw size={18} className="text-brand-indigo animate-spin-slow" />
+              </div>
               Lead Pipeline Automation
             </h3>
-            <p className="text-[10px] text-zinc-500 mt-1 uppercase font-mono">Live Stage Tracking & Channel Flow</p>
+            <p className="text-[11px] text-zinc-500 mt-1 uppercase font-bold tracking-[0.2em]">Matrix Flow Analysis</p>
           </div>
           <div className="flex items-center gap-2">
-             <div className="px-3 py-1 bg-brand-indigo/10 border border-brand-indigo/20 rounded text-[9px] font-bold text-brand-indigo uppercase">Pipeline Active</div>
+             <div className="px-4 py-1.5 bg-brand-indigo/10 border border-brand-indigo/30 rounded-full text-[10px] font-bold text-brand-indigo uppercase tracking-wider">Stream Active</div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {steps.map((step, i) => (
             <motion.div 
               key={step.label}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.05 }}
-              className="bg-zinc-900 border border-zinc-800 p-4 rounded hover:border-brand-indigo/50 transition-all group/card relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-all group/card relative overflow-hidden"
             >
-              <div className={cn("absolute top-0 right-0 p-2 opacity-5", step.color)}>
-                <step.icon size={40} />
+              <div className={cn("absolute top-0 right-0 p-2 opacity-5 scale-150", step.color)}>
+                <step.icon size={48} />
               </div>
-              <div className="flex items-center gap-2 mb-3">
-                 <div className={cn("w-6 h-6 rounded flex items-center justify-center", step.bg, step.color)}>
-                    <step.icon size={12} />
+              <div className="flex items-center gap-2 mb-4">
+                 <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", step.bg, step.color)}>
+                    <step.icon size={14} />
                  </div>
-                 <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">{step.label}</span>
+                 <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{step.label}</span>
               </div>
-              <div className="text-2xl font-mono font-bold text-white mb-2">{step.count}</div>
-              <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+              <div className="text-3xl font-mono font-bold text-white mb-3">{step.count}</div>
+              <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                  <motion.div 
                     initial={{ width: 0 }}
-                    animate={{ width: `${(step.count / (stats.totalLeads || 1)) * 100}%` }}
+                    animate={{ width: `${(step.count / (Math.max(1, stats.totalLeads))) * 100}%` }}
                     className={cn("h-full", step.color.replace('text-', 'bg-'))} 
                  />
               </div>
@@ -203,30 +207,30 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
   const recommendations = [
     { 
       id: 1, 
-      title: `${stats.pipeline.followup} Leads Need Urgent Follow-up`, 
-      description: 'AI detected pending follow-up statuses. Re-engaging these leads now could boost conversion by 15%.',
+      title: `${stats.pipeline.followup} Priority Leads Identified`, 
+      description: 'System detected pending critical follow-ups. Automated re-engagement could recover 15% revenue leakage.',
       status: 'URGENT',
       icon: Clock,
       color: 'text-rose-500',
-      glow: 'hover:shadow-[0_0_20px_rgba(244,63,94,0.2)]'
+      glow: 'shadow-[0_0_15px_-5px_rgba(244,63,94,0.4)]'
     },
     { 
       id: 2, 
-      title: 'Potential Revenue Opportunity Detected', 
-      description: `Closing ${stats.pipeline.followup} active follow-ups could yield approximately ₹${(stats.pipeline.followup * 25000).toLocaleString()} in revenue.`,
-      status: 'OPPORTUNITY',
-      icon: Sparkles,
+      title: 'High-Value Conversion Detected', 
+      description: `Targeting active leads could yield ₹${(stats.pipeline.followup * 25000).toLocaleString()} in upcoming pipeline growth.`,
+      status: 'PREMIUM',
+      icon: Target,
       color: 'text-brand-emerald',
-      glow: 'hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]'
+      glow: 'shadow-[0_0_15px_-5px_rgba(16,185,129,0.4)]'
     },
     { 
       id: 3, 
-      title: 'Conversion Rate Improving', 
-      description: `Your conversion rate is reaching ${stats.conversionRate}%. Automation successfully marked ${stats.pipeline.new} leads as "NEW" today.`,
-      status: 'ATTENTION',
-      icon: TrendingUp,
-      color: 'text-amber-500',
-      glow: 'hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]'
+      title: 'Growth Vector Strengthening', 
+      description: `Acquisition velocity is up. BizAI marked ${stats.pipeline.new} new assets in the primary matrix today.`,
+      status: 'OPTIMAL',
+      icon: Sparkles,
+      color: 'text-brand-indigo',
+      glow: 'shadow-[0_0_15px_-5px_rgba(99,102,241,0.4)]'
     }
   ];
 
@@ -234,28 +238,28 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white border border-zinc-200 p-6 rounded shadow-sm relative overflow-hidden group"
+      className="glass-card p-4 md:p-8 rounded-2xl relative overflow-hidden group"
     >
-      <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
-         <Bot size={120} className="text-brand-indigo" />
+      <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity">
+         <Bot size={140} className="text-brand-indigo" />
       </div>
 
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center gap-4">
           <div className="relative">
-            <div className="absolute -inset-1 bg-brand-indigo/30 rounded-full blur animate-pulse" />
-            <div className="relative w-10 h-10 bg-zinc-950 rounded-xl flex items-center justify-center text-brand-indigo">
-               <Bot size={22} />
+            <div className="absolute -inset-2 bg-brand-indigo/30 rounded-full blur animate-pulse" />
+            <div className="relative w-12 h-12 bg-zinc-950 border border-white/10 rounded-2xl flex items-center justify-center text-brand-indigo shadow-inner">
+               <Bot size={28} />
             </div>
           </div>
           <div>
-            <h3 className="text-[11px] font-bold text-zinc-900 uppercase tracking-widest leading-none">🧠 AI Recommendation Engine</h3>
-            <p className="text-[9px] text-zinc-500 mt-1.5 uppercase font-bold tracking-tighter">Real-time AI business insights</p>
+            <h3 className="text-[13px] font-bold text-white uppercase tracking-[0.2em] leading-none">AI Insight Matrix</h3>
+            <p className="text-[10px] text-zinc-500 mt-2 uppercase font-bold tracking-tight">Real-time Autonomous Strategic Analysis</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-           <span className="w-2 h-2 bg-brand-emerald rounded-full animate-pulse" />
-           <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Live Engine Status</span>
+        <div className="hidden sm:flex items-center gap-3">
+           <span className="w-2.5 h-2.5 bg-brand-emerald rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Engine Optimized</span>
         </div>
       </div>
 
@@ -263,27 +267,32 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
         {recommendations.map((rec) => (
           <motion.div 
             key={rec.id}
-            whileHover={{ y: -4, scale: 1.02 }}
+            whileHover={{ y: -5, backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
             className={cn(
-              "p-5 rounded-lg border border-zinc-100 bg-zinc-50/30 relative group transition-all duration-300",
+              "p-6 rounded-2xl border border-white/5 bg-white/5 relative group transition-all duration-500",
               rec.glow
             )}
           >
-            <div className="flex items-center justify-between mb-4">
-               <div className={cn("w-8 h-8 rounded-lg bg-white border border-zinc-100 flex items-center justify-center shadow-sm", rec.color)}>
-                  <rec.icon size={16} />
+            <div className="flex items-center justify-between mb-6">
+               <div className={cn("w-10 h-10 rounded-xl bg-zinc-950 border border-white/10 flex items-center justify-center shadow-lg", rec.color)}>
+                  <rec.icon size={20} />
                </div>
                <span className={cn(
-                 "text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest shadow-sm",
+                 "text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest shadow-lg border border-white/5",
                  rec.status === 'URGENT' ? "bg-rose-500 text-white" : 
-                 rec.status === 'OPPORTUNITY' ? "bg-brand-emerald text-white" : 
-                 "bg-amber-500 text-white"
+                 rec.status === 'PREMIUM' ? "bg-brand-emerald text-white" : 
+                 "bg-brand-indigo text-white"
                )}>
                  {rec.status}
                </span>
             </div>
-            <h4 className="text-[12px] font-bold text-zinc-900 mb-2 leading-tight">{rec.title}</h4>
-            <p className="text-[10px] text-zinc-500 leading-relaxed font-medium">{rec.description}</p>
+            <h4 className="text-[14px] font-bold text-white mb-3 leading-tight tracking-tight">{rec.title}</h4>
+            <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">{rec.description}</p>
+            
+            <div className="mt-6 flex items-center gap-2 text-[10px] font-bold text-brand-indigo opacity-0 group-hover:opacity-100 transition-opacity">
+              <span>INITIALIZE AI TAKEOVER</span>
+              <ArrowRight size={12} />
+            </div>
           </motion.div>
         ))}
       </div>
@@ -293,48 +302,50 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
 
 function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isSyncing, setIsSyncing }: AdminDashboardProps) {
   return (
-    <div className="space-y-6 pb-24">
+    <div className="space-y-8 pb-24">
       {/* Header Info */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-4">
         <div>
-           <h2 className="text-xl font-serif italic font-bold text-zinc-900 leading-none">Admin Control Center</h2>
-           <p className="text-[11px] text-zinc-500 mt-2 uppercase tracking-widest font-bold">System Command & Infrastructure Monitoring</p>
+           <h2 className="text-2xl font-serif italic font-bold text-white leading-none">Matrix Command Center</h2>
+           <p className="text-[11px] text-zinc-500 mt-3 uppercase tracking-[0.3em] font-bold">Autonomous Control & Node Monitoring</p>
         </div>
-        <div className="flex items-center gap-3">
-           <div className="bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-brand-emerald animate-pulse" />
-              <span className="text-[9px] font-bold text-white uppercase tracking-widest">System Active</span>
+        <div className="flex flex-wrap items-center gap-3">
+           <div className="bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl flex items-center gap-3 shadow-lg shadow-black/40">
+              <div className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse neon-glow-emerald" />
+              <span className="text-[10px] font-bold text-white uppercase tracking-widest">Network Active</span>
            </div>
-           <div className="bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded flex items-center gap-2">
-              <RefreshCcw size={10} className={cn("text-brand-indigo", isSyncing && "animate-spin")} />
-              <span className="text-[9px] font-bold text-white uppercase tracking-widest leading-none">
-                {isSyncing ? "Syncing..." : "Data Stream Stable"}
+           <div className="bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl flex items-center gap-3 shadow-lg shadow-black/40">
+              <RefreshCcw size={12} className={cn("text-brand-indigo", isSyncing && "animate-spin")} />
+              <span className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">
+                {isSyncing ? "Syncing Logic..." : "Stream Nominal"}
               </span>
            </div>
         </div>
       </div>
 
       {/* Primary KPI Grid */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-              { label: 'Total Leads', val: stats.totalLeads, icon: User, color: 'text-brand-indigo' },
-              { label: 'Active Pipeline', val: stats.pipeline.new + stats.pipeline.contacted + stats.pipeline.followup, icon: ActivityIcon, color: 'text-amber-500' },
-              { label: 'Converted', val: stats.pipeline.converted, icon: CheckCircle2, color: 'text-brand-emerald' },
-              { label: 'Goal Progress', val: leads.length > 0 ? (stats.pipeline.converted / leads.length * 100).toFixed(0) + '%' : '0%', icon: Sparkles, color: 'text-brand-indigo' }
+              { label: 'Total Matrix Leads', val: stats.totalLeads, icon: User, color: 'text-brand-indigo' },
+              { label: 'Live Pipeline', val: stats.pipeline.new + stats.pipeline.contacted + stats.pipeline.followup, icon: ActivityIcon, color: 'text-amber-500' },
+              { label: 'Conversion Velocity', val: stats.pipeline.converted, icon: CheckCircle2, color: 'text-brand-emerald' },
+              { label: 'Optimal Growth', val: leads.length > 0 ? (stats.pipeline.converted / leads.length * 100).toFixed(0) + '%' : '0%', icon: Sparkles, color: 'text-brand-indigo' }
         ].map((kpi, i) => (
           <motion.div 
             key={i}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="bg-white border border-zinc-200 p-3 md:p-4 rounded shadow-sm hover:shadow-md transition-all group"
+            className="glass-card p-5 rounded-2xl shadow-xl hover:bg-white/5 transition-all group border-white/5"
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{kpi.label}</span>
-              <kpi.icon size={12} className={kpi.color} />
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{kpi.label}</span>
+              <div className="p-2 bg-white/5 rounded-lg">
+                <kpi.icon size={14} className={kpi.color} />
+              </div>
             </div>
-            <div className="text-xl font-mono font-bold text-zinc-900">{kpi.val}</div>
-            <div className="mt-3 h-1 bg-zinc-100 rounded-full overflow-hidden">
+            <div className="text-3xl font-mono font-bold text-white tracking-tighter">{kpi.val}</div>
+            <div className="mt-5 h-1.5 bg-white/5 rounded-full overflow-hidden">
                <motion.div 
                 initial={{ width: 0 }}
                 animate={{ 
@@ -355,77 +366,84 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Lead Pipeline Status Breakdown */}
-        <div className="lg:col-span-2 bg-white border border-zinc-200 p-6 rounded shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-[11px] font-bold text-zinc-900 uppercase tracking-widest flex items-center gap-2">
-              <Users size={14} className="text-brand-indigo" />
-              Pipeline Dynamics
+        <div className="lg:col-span-2 glass-card p-8 rounded-2xl shadow-2xl relative overflow-hidden group border-white/5">
+          <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
+             <Layers size={60} className="text-brand-indigo" />
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-white/5 pb-6">
+            <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-3">
+              <Users size={18} className="text-brand-indigo animate-pulse" />
+              VECTOR PIPELINE ANALYSIS
             </h3>
-            <div className="flex items-center gap-3">
-              <span className="text-[9px] text-zinc-400 font-mono">Real-time Stage Analysis</span>
-              <div className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" />
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest leading-none">Global Network Sync</span>
+              <div className="w-2.5 h-2.5 rounded-full bg-brand-emerald animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
             </div>
           </div>
           
-          <div className="space-y-6">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 md:gap-4">
+          <div className="space-y-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
               {[
-                { label: 'New', count: stats.pipeline.new, color: 'bg-zinc-100 text-zinc-500' },
-                { label: 'Contacted', count: stats.pipeline.contacted, color: 'bg-sky-50 text-sky-500' },
-                { label: 'Follow-Up', count: stats.pipeline.followup, color: 'bg-amber-50 text-amber-500' },
-                { label: 'Converted', count: stats.pipeline.converted, color: 'bg-emerald-50 text-brand-emerald' },
-                { label: 'Closed', count: stats.pipeline.closed, color: 'bg-rose-50 text-rose-500' },
+                { label: 'New Nodes', count: stats.pipeline.new, color: 'text-zinc-400 bg-white/5' },
+                { label: 'Contacted', count: stats.pipeline.contacted, color: 'text-sky-400 bg-sky-500/10 shadow-[0_0_15px_rgba(14,165,233,0.1)]' },
+                { label: 'Follow-Up', count: stats.pipeline.followup, color: 'text-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.1)]' },
+                { label: 'Converted', count: stats.pipeline.converted, color: 'text-brand-emerald bg-brand-emerald/10 shadow-[0_0_15px_rgba(16,185,129,0.1)]' },
+                { label: 'Closed Sync', count: stats.pipeline.closed, color: 'text-rose-500 bg-rose-500/10 shadow-[0_0_15px_rgba(244,63,94,0.1)]' },
               ].map((stage) => (
-                <div key={stage.label} className="p-2 md:p-3 bg-zinc-50 border border-zinc-100 rounded text-center">
-                  <div className="text-base md:text-lg font-mono font-bold text-zinc-900">{stage.count}</div>
-                  <div className={cn("text-[7px] md:text-[8px] font-bold uppercase mt-1 px-1 py-0.5 rounded", stage.color)}>{stage.label}</div>
+                <div key={stage.label} className="p-4 md:p-5 bg-white/5 border border-white/5 rounded-2xl text-center group/stage hover:bg-white/10 transition-all cursor-crosshair">
+                  <div className="text-xl md:text-2xl font-mono font-black text-white shadow-xl">{stage.count}</div>
+                  <div className={cn("text-[8px] md:text-[9px] font-black uppercase mt-2 px-2 py-1 rounded-lg border border-transparent", stage.color)}>{stage.label}</div>
                 </div>
               ))}
             </div>
 
-            <div className="bg-zinc-50 border border-zinc-100 p-4 rounded">
+            <div className="bg-black/20 border border-white/5 p-6 rounded-2xl shadow-inner backdrop-blur-md">
               <div className="flex items-center justify-between mb-4">
-                 <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Global Lead Distribution</span>
+                 <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.25em] leading-none">Distributed Asset Load</span>
+                 <span className="text-[11px] font-mono font-black text-brand-emerald">{stats.totalLeads > 0 ? "OPTIMIZED" : "LOADING"}</span>
               </div>
-              <div className="flex h-4 w-full rounded-full overflow-hidden border border-zinc-200 shadow-inner">
-                <div className="h-full bg-zinc-200" style={{ width: `${(stats.pipeline.new / (stats.totalLeads || 1)) * 100}%` }} />
-                <div className="h-full bg-sky-400" style={{ width: `${(stats.pipeline.contacted / (stats.totalLeads || 1)) * 100}%` }} />
-                <div className="h-full bg-amber-400" style={{ width: `${(stats.pipeline.followup / (stats.totalLeads || 1)) * 100}%` }} />
-                <div className="h-full bg-brand-emerald" style={{ width: `${(stats.pipeline.converted / (stats.totalLeads || 1)) * 100}%` }} />
-                <div className="h-full bg-rose-400" style={{ width: `${(stats.pipeline.closed / (stats.totalLeads || 1)) * 100}%` }} />
+              <div className="flex h-5 w-full rounded-full overflow-hidden border border-white/5 bg-zinc-900/50 p-1">
+                <motion.div initial={{ width: 0 }} animate={{ width: `${(stats.pipeline.new / (stats.totalLeads || 1)) * 100}%` }} className="h-full bg-zinc-600 rounded-full" />
+                <motion.div initial={{ width: 0 }} animate={{ width: `${(stats.pipeline.contacted / (stats.totalLeads || 1)) * 100}%` }} className="h-full bg-sky-500 shadow-[0_0_10px_rgba(14,165,233,0.5)] rounded-full -ml-1 border-l-2 border-zinc-950" />
+                <motion.div initial={{ width: 0 }} animate={{ width: `${(stats.pipeline.followup / (stats.totalLeads || 1)) * 100}%` }} className="h-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)] rounded-full -ml-1 border-l-2 border-zinc-950" />
+                <motion.div initial={{ width: 0 }} animate={{ width: `${(stats.pipeline.converted / (stats.totalLeads || 1)) * 100}%` }} className="h-full bg-brand-emerald shadow-[0_0_10px_rgba(16,185,129,0.5)] rounded-full -ml-1 border-l-2 border-zinc-950" />
+                <motion.div initial={{ width: 0 }} animate={{ width: `${(stats.pipeline.closed / (stats.totalLeads || 1)) * 100}%` }} className="h-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)] rounded-full -ml-1 border-l-2 border-zinc-950" />
               </div>
-              <div className="grid grid-cols-5 gap-2 mt-3 text-center">
-                {['NEW', 'CONTACT', 'FOLLOW', 'CONVER', 'CLOSE'].map((l, i) => (
-                  <span key={i} className="text-[7px] font-bold text-zinc-400 uppercase tracking-tighter">{l}</span>
+              <div className="flex justify-between mt-4 text-center px-1">
+                {['QUEUE', 'ACTIVE', 'PULSE', 'CORE', 'VAULT'].map((l, i) => (
+                  <span key={i} className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">{l}</span>
                 ))}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-zinc-900 border border-zinc-800 p-4 rounded text-white overflow-hidden relative group/ai">
-                <div className="absolute top-0 right-0 p-4 opacity-5">
-                   <Target size={60} className="text-brand-indigo" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-brand-indigo/10 border border-brand-indigo/20 p-6 rounded-2xl text-white overflow-hidden relative group/ai shadow-lg shadow-indigo-950/20">
+                <div className="absolute -top-4 -right-4 p-8 opacity-10 group-hover:scale-110 transition-transform">
+                   <Target size={100} className="text-brand-indigo" />
                 </div>
                 <div className="relative z-10">
-                   <h4 className="text-[10px] font-bold uppercase tracking-widest text-brand-indigo mb-3">AI Automation Health</h4>
-                   <div className="space-y-2">
-                     <div className="flex justify-between text-[9px] font-bold">
-                       <span className="text-zinc-400">PIPELINE ACCURACY</span>
-                       <span className="text-brand-emerald">99.2%</span>
+                   <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-brand-indigo mb-4 flex items-center gap-2">
+                     <Cpu size={14} />
+                     CORE LOGIC INTEGRITY
+                   </h4>
+                   <div className="space-y-3">
+                     <div className="flex justify-between text-[11px] font-black text-white/80">
+                       <span className="uppercase tracking-widest">Pipeline Accuracy</span>
+                       <span className="text-brand-emerald font-mono">99.8%</span>
                      </div>
-                     <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
-                       <div className="h-full bg-brand-indigo w-[99%]" />
+                     <div className="h-2 bg-black/40 rounded-full overflow-hidden p-[1px] border border-white/5">
+                       <motion.div initial={{ width: 0 }} animate={{ width: '99.8%' }} transition={{ duration: 2 }} className="h-full bg-brand-indigo rounded-full shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
                      </div>
                    </div>
                 </div>
               </div>
-              <div className="bg-zinc-50 border border-zinc-100 p-4 rounded flex items-center justify-between">
+              <div className="bg-white/5 border border-white/5 p-6 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors cursor-pointer group shadow-xl">
                 <div>
-                   <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Conversion Velocity</h4>
-                   <p className="text-lg font-mono font-bold text-zinc-900">2.4 days</p>
+                   <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500 mb-2">Vector Throughput</h4>
+                   <p className="text-2xl font-mono font-black text-white tracking-tighter group-hover:text-brand-emerald transition-colors">1.82 Nodes/Day</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-brand-emerald/10 flex items-center justify-center text-brand-emerald">
-                   <TrendingUp size={20} />
+                <div className="w-14 h-14 rounded-2xl bg-brand-emerald/10 border border-brand-emerald/20 flex items-center justify-center text-brand-emerald shadow-lg group-hover:scale-110 transition-transform">
+                   <TrendingUp size={28} />
                 </div>
               </div>
             </div>
@@ -433,88 +451,100 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
         </div>
 
         {/* Lead Table - Live Admin Actions */}
-        <div className="bg-white border border-zinc-200 rounded shadow-sm overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-zinc-100 bg-zinc-50/50 flex items-center justify-between">
-            <h3 className="text-[10px] font-bold text-zinc-900 uppercase tracking-widest leading-none">Status Manager</h3>
-            <Database size={12} className="text-zinc-400" />
+        <div className="glass-card rounded-2xl shadow-2xl overflow-hidden flex flex-col border-white/5 lg:col-span-1">
+          <div className="p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+               <div className="w-8 h-8 bg-brand-indigo/20 rounded-lg flex items-center justify-center text-brand-indigo">
+                  <Database size={16} />
+               </div>
+               <h3 className="text-sm font-black text-white uppercase tracking-[0.1em]">Node Management</h3>
+            </div>
+            <div className="flex items-center gap-2">
+               <div className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" />
+               <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">LIVE</span>
+            </div>
           </div>
-          <div className="flex-1 overflow-y-auto max-h-[460px] custom-scrollbar">
+          <div className="flex-1 overflow-y-auto max-h-[520px] custom-scrollbar p-2">
             {leads.length > 0 ? (
               leads.slice(0, 15).map((lead, i) => (
-                <div key={i} className="p-4 border-b border-zinc-50 last:border-0 hover:bg-zinc-50/50 transition-all group/lead">
-                  <div className="flex items-center justify-between mb-2">
+                <div key={i} className="p-4 mb-2 bg-white/5 rounded-2xl border border-transparent hover:border-white/10 hover:bg-white/[0.08] transition-all group/lead cursor-pointer shadow-sm">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex flex-col">
-                      <span className="text-[11px] font-bold text-zinc-800">{lead.name}</span>
-                      <span className="text-[9px] text-zinc-500 font-mono">{lead.service}</span>
+                      <span className="text-[13px] font-bold text-white tracking-tight group-hover:text-brand-indigo transition-colors">{lead.name}</span>
+                      <span className="text-[10px] text-zinc-500 font-mono font-bold mt-1 uppercase tracking-tighter">{lead.service || 'UNCLASSIFIED'}</span>
                     </div>
                     <StatusBadge status={lead.status} />
                   </div>
-                  <div className="flex items-center gap-2 mt-3">
+                  <div className="flex items-center gap-3 pt-3 border-t border-white/5">
                     <select 
                       value={lead.status}
                       onChange={(e) => onUpdateStatus(lead.name, e.target.value)}
-                      className="text-[9px] font-bold bg-white border border-zinc-200 rounded px-2 py-1 outline-none hover:border-brand-indigo transition-colors"
+                      className="flex-1 text-[10px] font-black bg-zinc-900 text-zinc-400 border border-white/5 rounded-xl px-3 py-2 outline-none focus:border-brand-indigo focus:text-white transition-all appearance-none cursor-pointer hover:bg-zinc-800"
                     >
-                      <option value="NEW">MARK NEW</option>
-                      <option value="CONTACTED">CONTACTED</option>
-                      <option value="FOLLOW-UP">FOLLOW-UP</option>
-                      <option value="CONVERTED">CONVERTED</option>
-                      <option value="CLOSED">CLOSED</option>
+                      <option value="NEW">MARK: RAW NODE</option>
+                      <option value="CONTACTED">STATUS: CONTACTED</option>
+                      <option value="FOLLOW-UP">STAGE: PERSISTENT</option>
+                      <option value="CONVERTED">CORE: INTEGRATED</option>
+                      <option value="CLOSED">LOGS: TERMINATED</option>
                     </select>
-                    <button className="p-1 text-zinc-300 hover:text-brand-indigo transition-colors">
-                      <ChevronRight size={14} />
-                    </button>
+                    <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-zinc-500 hover:text-white hover:bg-brand-indigo transition-all">
+                      <ChevronRight size={18} />
+                    </div>
                   </div>
                 </div>
               ))
             ) : isSyncing ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center h-full">
-                <RefreshCcw size={24} className="text-brand-indigo mb-3 animate-spin" />
-                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Synchronizing Matrix...</span>
+              <div className="flex flex-col items-center justify-center py-20 text-center h-full">
+                <RefreshCcw size={32} className="text-brand-indigo mb-4 animate-spin" />
+                <span className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em]">RECALIBRATING MATRIX...</span>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-center h-full">
-                <Database size={24} className="text-zinc-200 mb-3" />
-                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">No Active Cloud Streams</span>
-                <p className="text-[8px] text-zinc-500 mt-1 uppercase">Check Google Script connectivity</p>
+              <div className="flex flex-col items-center justify-center py-20 text-center h-full opacity-40">
+                <Database size={40} className="text-zinc-500 mb-4" />
+                <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em]">NODE STREAMS DISCONNECTED</span>
+                <p className="text-[9px] text-zinc-600 mt-2 uppercase font-mono">Verify uplink protocols</p>
               </div>
             )}
           </div>
-          <button className="p-3 bg-zinc-50 text-[9px] font-bold text-zinc-500 uppercase hover:text-brand-indigo border-t border-zinc-100 transition-colors">
-            Analyze Full Portfolio
+          <button className="p-5 bg-white/5 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] hover:text-white hover:bg-brand-indigo transition-all border-t border-white/5">
+            DOWNLOAD FULL TRANSACTION LOG
           </button>
         </div>
       </div>
 
       <div>
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-[11px] font-bold text-zinc-900 uppercase tracking-widest flex items-center gap-2">
-             <ActivityIcon size={14} className="text-brand-indigo" />
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-sm font-black text-white uppercase tracking-[0.3em] flex items-center gap-3">
+             <ActivityIcon size={18} className="text-brand-indigo animate-pulse" />
              Strategic Movement Log
           </h3>
           <button 
             onClick={() => setIsSyncing(true)}
-            className="text-[9px] font-bold text-brand-indigo uppercase hover:underline"
+            className="px-4 py-2 bg-brand-indigo/10 border border-brand-indigo/30 text-[10px] font-black text-brand-indigo uppercase rounded-xl hover:bg-brand-indigo hover:text-white transition-all shadow-lg"
           >
-            Force Sync Now
+            FORCE SECURE SYNC
           </button>
         </div>
-        <div className="space-y-2">
-          {activities.slice(0, 4).map((log) => (
-            <div key={log.id} className="flex items-center justify-between p-3 bg-white border border-zinc-100 rounded hover:border-brand-indigo/30 transition-shadow">
-               <div className="flex items-center gap-4">
+        <div className="space-y-3">
+          {activities.slice(0, 6).map((log) => (
+            <div key={log.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:border-brand-indigo/30 hover:bg-white/10 transition-all group shadow-xl">
+               <div className="flex items-center gap-5">
                   <div className={cn(
-                    "w-8 h-8 rounded shrink-0 flex items-center justify-center",
-                    log.type === 'lead' ? "bg-brand-emerald/10 text-brand-emerald" : "bg-brand-indigo/10 text-brand-indigo"
+                    "w-10 h-10 rounded-xl shrink-0 flex items-center justify-center border transition-all",
+                    log.type === 'lead' ? "bg-brand-emerald/10 border-brand-emerald/20 text-brand-emerald" : "bg-brand-indigo/10 border-brand-indigo/20 text-brand-indigo"
                   )}>
-                    {log.type === 'lead' ? <Users size={14} /> : <ActivityIcon size={14} />}
+                    {log.type === 'lead' ? <Users size={16} /> : <ActivityIcon size={16} />}
                   </div>
                   <div>
-                     <p className="text-[11px] font-bold text-zinc-800">{log.message}</p>
-                     <span className="text-[8px] text-zinc-400 font-mono uppercase">{log.timestamp.toLocaleTimeString()}</span>
+                     <p className="text-[13px] font-bold text-zinc-100 group-hover:text-white transition-colors">{log.message}</p>
+                     <span className="text-[9px] text-zinc-500 font-mono font-black uppercase mt-1 inline-block tracking-tighter opacity-60">{log.timestamp.toLocaleTimeString()}</span>
                   </div>
                </div>
-               {log.status && <StatusBadge status={log.status} />}
+               {log.status && (
+                 <div className="hidden sm:block">
+                   <StatusBadge status={log.status} />
+                 </div>
+               )}
             </div>
           ))}
         </div>
@@ -674,11 +704,27 @@ export default function App() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
 
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'info' } | null>(null);
+
+  const showToast = (message: string, type: 'error' | 'success' | 'info' = 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
+
   const [isListening, setIsListening] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
 
   // Voice AI Recognition Logic
-  const startVoiceAssistant = () => {
+  const startVoiceAssistant = async () => {
+    try {
+      // Check for microphone permission explicitly first
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(track => track.stop()); // Just checking permission
+    } catch (err) {
+      setVoiceError("Microphone access denied. Please enable it in your browser settings.");
+      return;
+    }
+
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     
     if (!SpeechRecognition) {
@@ -710,8 +756,12 @@ export default function App() {
     recognition.onerror = (event: any) => {
       setIsListening(false);
       if (event.error === 'not-allowed') {
+        showToast("Microphone access denied. Please enable it.", 'error');
         setVoiceError("Voice access required to enable AI assistant.");
+      } else if (event.error === 'no-speech') {
+        // Silent error
       } else {
+        showToast("Voice recognition error: " + event.error, 'error');
         setVoiceError("Error occurred in speech recognition: " + event.error);
       }
     };
@@ -1140,30 +1190,58 @@ Business analytics overview:
     setInput('');
     setIsLoading(true);
 
-    try {
-      const response = await chatWithAssistant([...messages, userMsg], currentMode, language);
-      const assistantMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response,
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, assistantMsg]);
-    } catch (error) {
-      const errorMsg: Message = {
-        id: 'error',
-        role: 'assistant',
-        content: "I'm sorry, I encountered an error. Please try again.",
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, errorMsg]);
-    } finally {
-      setIsLoading(false);
+    const performRequest = async (retryCount = 0) => {
+      try {
+        const response = await chatWithAssistant([...messages, userMsg], currentMode, language);
+        const assistantMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: response,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, assistantMsg]);
+      } catch (error: any) {
+        if (retryCount < 2 && !error.message?.includes('401') && !error.message?.includes('403')) {
+           // Auto-retry once/twice for transient issues (except auth errors)
+           console.log(`Retrying... (${retryCount + 1})`);
+           await new Promise(r => setTimeout(r, 2000));
+           return performRequest(retryCount + 1);
+        }
+
+        showToast("Strategic Connection Interrupted. Check your network.", 'error');
+        const errorMsg: Message = {
+          id: 'error-' + Date.now(),
+          role: 'assistant',
+          content: "### ⚠️ STRATEGIC CONNECTION INTERRUPTED\n\nI couldn't reach the BizAI Core. This is usually due to network congestion or high traffic.\n\n**OPTIONS:**\n\n1. [RETRY COMMAND](button:retry)\n2. [Switch to WhatsApp Support](https://wa.me/919330457995?text=Hi%20BizAI%20is%20down%20for%20me)\n\n*Your command history has been saved. You can try executing it again in a few seconds.*",
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, errorMsg]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    await performRequest();
+  };
+
+  const handleRetry = () => {
+    // Find the last user message
+    const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
+    if (lastUserMsg) {
+      // Remove any trailing error message
+      setMessages(prev => {
+        const last = prev[prev.length - 1];
+        if (last && last.id.startsWith('error-')) {
+          return prev.slice(0, -1);
+        }
+        return prev;
+      });
+      handleSend(lastUserMsg.content);
     }
   };
 
   return (
-    <div className="flex bg-[#F0F1F4] text-zinc-900 font-sans selection:bg-brand-indigo/10 overflow-x-hidden min-h-screen w-full relative">
+    <div className="flex bg-zinc-950 text-zinc-100 font-sans selection:bg-brand-indigo/10 overflow-x-hidden min-h-screen w-full relative">
       {/* Mobile Sidebar Overlay Backdrop */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -1172,7 +1250,7 @@ Business analytics overview:
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
           />
         )}
       </AnimatePresence>
@@ -1384,55 +1462,80 @@ Business analytics overview:
       </AnimatePresence>
 
       {/* Main Terminal View */}
-      <main className="flex-1 flex flex-col min-w-0 bg-white relative overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 bg-zinc-950 relative overflow-hidden">
         {/* Technical Header */}
-        <header className="h-14 border-b border-zinc-200 flex items-center justify-between px-3 md:px-6 bg-white/80 backdrop-blur-md z-30 shrink-0 sticky top-0">
-          <div className="flex items-center gap-2 md:gap-4">
+        <header className="h-16 border-b border-zinc-800 flex items-center justify-between px-4 md:px-8 bg-zinc-950/80 backdrop-blur-lg z-30 shrink-0 sticky top-0 shadow-lg shadow-black/20">
+          <div className="flex items-center gap-3 md:gap-4">
             <button 
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-1.5 hover:bg-zinc-50 border border-zinc-100 rounded transition-colors"
+              className="lg:hidden p-2 bg-zinc-900 border border-zinc-700/50 rounded-lg text-white transition-all active:scale-95"
             >
-              <PanelLeftOpen size={16} className={cn("transition-transform", sidebarOpen && "rotate-180")} />
+              <Users size={18} />
             </button>
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest leading-none hidden md:inline">Console</span>
-                <span className="text-[11px] md:text-xs font-bold text-zinc-900 tracking-tight truncate max-w-[100px] xs:max-w-[150px] sm:max-w-none">
+                <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest leading-none hidden sm:inline">Portal</span>
+                <span className="text-sm font-bold text-white tracking-tight truncate max-w-[120px] xs:max-w-[180px] sm:max-w-none">
                   {currentMode || "Startup"}
                 </span>
               </div>
-              <span className="text-[7px] md:text-[8px] font-mono text-zinc-400 leading-none">0x921A-BIZ-NODE</span>
+              <span className="text-[8px] font-mono text-brand-indigo leading-none font-bold uppercase tracking-tighter">BizAI Matrix Engine</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 md:gap-6">
+          <div className="flex items-center gap-3 md:gap-6">
              <div className="hidden lg:flex items-center gap-8">
               <div className="flex flex-col items-end">
-                <span className="text-[8px] uppercase font-bold text-zinc-400 tracking-widest">Pipeline Health</span>
-                <span className="text-[10px] font-mono text-brand-emerald">99.8%</span>
+                <span className="text-[8px] uppercase font-bold text-zinc-500 tracking-widest">Network Speed</span>
+                <span className="text-[10px] font-mono text-brand-emerald">10GBPS</span>
               </div>
               <div className="flex flex-col items-end">
-                <span className="text-[8px] uppercase font-bold text-zinc-400 tracking-widest">Network Status</span>
+                <span className="text-[8px] uppercase font-bold text-zinc-500 tracking-widest">Sync Priority</span>
                 <span className={cn("text-[10px] font-mono", leads.length > 0 ? "text-brand-emerald" : "text-amber-500")}>
-                  {leads.length > 0 ? "STABLE" : "SYNCING"}
+                  {leads.length > 0 ? "ULTRA" : "HIGH"}
                 </span>
               </div>
              </div>
              <button 
               onClick={() => setMessages([messages[0]])}
-              className="p-1.5 hover:bg-zinc-50 border border-zinc-100 rounded text-zinc-400 hover:text-zinc-600 transition-all"
+              className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-400 hover:text-white transition-all shadow-sm"
               title="Reset System"
              >
-                <RefreshCcw size={14} />
+                <RefreshCcw size={16} />
              </button>
-             <div className="w-8 h-8 rounded border border-zinc-200 p-0.5 overflow-hidden group hover:border-brand-indigo transition-colors cursor-pointer shrink-0">
+             <div className="w-10 h-10 rounded-xl border border-zinc-800 bg-zinc-900 p-0.5 overflow-hidden group hover:border-brand-indigo transition-colors cursor-pointer shrink-0 shadow-lg shadow-brand-indigo/10">
                 <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent("pcschair")}`} alt="User" className="w-full h-full object-cover" />
              </div>
           </div>
         </header>
 
+        {/* Toast Notification */}
+        <AnimatePresence>
+          {toast && (
+            <motion.div
+              initial={{ opacity: 0, y: 50, x: '-50%' }}
+              animate={{ opacity: 1, y: 0, x: '-50%' }}
+              exit={{ opacity: 0, y: 50, x: '-50%' }}
+              className={cn(
+                "fixed bottom-32 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 border backdrop-blur-xl transition-all",
+                toast.type === 'error' ? "bg-rose-500/90 border-rose-400 text-white" : 
+                toast.type === 'success' ? "bg-emerald-500/90 border-emerald-400 text-white" :
+                "bg-zinc-900/90 border-zinc-700 text-white"
+              )}
+            >
+              <div className="p-1 rounded-lg bg-white/20">
+                <AlertCircle size={16} />
+              </div>
+              <span className="text-[12px] font-bold uppercase tracking-widest">{toast.message}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Console Viewport */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-8 space-y-12 bg-[#fafafa]">
-          <div className="max-w-7xl mx-auto space-y-12 pb-48">
+        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-8 space-y-12 bg-zinc-950 relative">
+          {/* Subtle noise/gradient background */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.08),transparent_50%)] pointer-events-none" />
+          
+          <div className="max-w-7xl mx-auto space-y-12 pb-48 relative z-10">
             {currentMode === 'Admin Control Center' ? (
               <AdminDashboard 
                 stats={stats} 
@@ -1447,143 +1550,161 @@ Business analytics overview:
               <>
                 {/* Multi-Agent Dashboard */}
             <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-zinc-950 border border-zinc-800 p-6 rounded-sm shadow-2xl relative overflow-hidden group"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="glass-card neon-glow-indigo p-5 md:p-10 rounded-2xl relative overflow-hidden group"
             >
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
-                <LayoutDashboard size={80} className="text-brand-indigo" />
+              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                <LayoutDashboard size={120} className="text-brand-indigo" />
               </div>
               <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brand-indigo/10 rounded flex items-center justify-center text-brand-indigo">
-                      <Activity size={20} />
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-brand-indigo/20 rounded-2xl flex items-center justify-center text-brand-indigo shadow-lg">
+                      <Activity size={24} className="animate-pulse" />
                     </div>
                     <div>
-                      <h2 className="text-white font-bold tracking-tight">BizAI Enterprise Dashboard</h2>
-                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">
-                        {isSyncing ? "Syncing with Sheets..." : `Live Sync: ${lastSyncTime ? lastSyncTime.toLocaleTimeString() : 'Ready'}`}
+                      <h2 className="text-white text-xl font-bold tracking-tight">Enterprise Insight Matrix</h2>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold mt-1">
+                        {isSyncing ? "Establishing Secure Connection..." : `Operational Node Sync: ${lastSyncTime ? lastSyncTime.toLocaleTimeString() : 'Active'}`}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 text-white">
-                     <div className="flex items-center gap-2 bg-zinc-900 px-3 py-1.5 rounded border border-zinc-800">
-                        <div className={cn("w-2 h-2 rounded-full", isSyncing ? "bg-brand-indigo animate-spin" : "bg-brand-emerald animate-pulse")} />
-                        <span className="text-[10px] font-bold uppercase tracking-tight">
-                          {isSyncing ? "Refreshing..." : "System Live"}
+                  <div className="flex items-center gap-4 text-white w-full md:w-auto">
+                     <div className="flex items-center gap-3 bg-zinc-900/50 border border-white/10 px-4 py-2 rounded-xl backdrop-blur-md shadow-lg flex-1 md:flex-none justify-center">
+                        <div className={cn("w-2.5 h-2.5 rounded-full", isSyncing ? "bg-brand-indigo animate-spin" : "bg-brand-emerald animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]")} />
+                        <span className="text-[11px] font-bold uppercase tracking-widest">
+                          {isSyncing ? "Synchronizing" : "System Core Live"}
                         </span>
                      </div>
                   </div>
                 </div>
 
-                <div id="stats-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 relative">
+                <div id="stats-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 relative">
                   {isSyncing && stats.totalLeads === 0 && (
-                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-zinc-950/40 backdrop-blur-[2px] rounded border border-zinc-800/50">
+                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl">
                        <div className="text-center">
-                          <div className="w-8 h-8 border-2 border-brand-indigo border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block">Connecting to Cloud Matrix...</span>
+                          <div className="w-10 h-10 border-2 border-brand-indigo border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                          <span className="text-[12px] font-bold text-white uppercase tracking-[0.2em] block">Decrypting Cloud Streams...</span>
                        </div>
                     </div>
                   )}
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50 relative overflow-hidden group/card shadow-lg shadow-indigo-900/5 min-h-[100px] flex flex-col justify-center">
-                    {isSyncing && stats.totalLeads === 0 && <div className="absolute inset-0 bg-zinc-900 z-10 flex flex-col p-4 space-y-2"><div className="h-2 bg-zinc-800 rounded w-1/3 animate-pulse" /><div className="h-6 bg-zinc-800 rounded w-2/3 animate-pulse" /><div className="h-2 bg-zinc-800 rounded w-1/2 animate-pulse mt-auto" /></div>}
-                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 block">Total Leads</span>
-                    <span className="text-xl font-mono font-bold text-white leading-none">{stats.totalLeads.toLocaleString()}</span>
-                    <div className="flex gap-2 mt-2">
-                       <span className={cn(
-                         "text-[8px] font-bold px-1.5 py-0.5 rounded uppercase",
-                         stats.totalLeads > 0 ? "text-brand-emerald bg-brand-emerald/10" : "text-zinc-600 bg-zinc-800"
-                       )}>
-                          {stats.totalLeads > 0 ? `+${Math.floor(stats.totalLeads * 0.1)} Potential` : "Stream Listening"}
-                       </span>
+                  
+                  {[
+                    { 
+                      label: 'Total Active Assets', 
+                      val: stats.totalLeads.toLocaleString(), 
+                      sub: stats.totalLeads > 0 ? `+${Math.floor(stats.totalLeads * 0.1)} Potential` : "Matrix Listening", 
+                      color: 'text-brand-indigo', 
+                      icon: Users 
+                    },
+                    { 
+                      label: 'Conversion Velocity', 
+                      val: `${stats.conversionRate}%`, 
+                      sub: 'Network Performance', 
+                      color: 'text-brand-emerald', 
+                      icon: TrendingUp, 
+                      progress: stats.conversionRate 
+                    },
+                    { 
+                      label: 'Projected Revenue', 
+                      val: `₹${(stats.revenueEstimate / 1000000).toFixed(2)}M`, 
+                      sub: 'ROI Efficiency: 4.8x', 
+                      color: 'text-brand-indigo', 
+                      icon: DollarSign, 
+                      spark: true 
+                    },
+                    { 
+                      label: 'Node Connectivity', 
+                      val: stats.totalLeads > 0 ? "ACTIVE" : "IDLE", 
+                      sub: isSyncing ? "Updating Matrix..." : "Stable Connection", 
+                      color: stats.totalLeads > 0 ? 'text-brand-emerald' : 'text-amber-500', 
+                      icon: Bot, 
+                      status: true 
+                    }
+                  ].map((card, idx) => (
+                    <div key={idx} className="bg-white/5 border border-white/5 p-5 rounded-2xl hover:bg-white/10 transition-all group/card shadow-xl min-h-[120px] flex flex-col justify-center relative backdrop-blur-sm">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{card.label}</span>
+                        <card.icon size={14} className={card.color} />
+                      </div>
+                      <div className="flex items-center gap-3">
+                         <span className={cn("text-2xl font-mono font-bold leading-none", card.color === 'text-brand-indigo' ? 'text-white' : card.color)}>{card.val}</span>
+                         {card.icon === TrendingUp && <TrendingUp size={16} className="text-brand-emerald mb-1 animate-bounce" />}
+                      </div>
+                      <div className="flex items-center justify-between mt-4">
+                         <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-tighter">{card.sub}</span>
+                         {card.spark && (
+                           <div className="flex gap-0.5 h-4 items-end pr-1">
+                              {(stats.heatmap && stats.heatmap.length > 0 ? stats.heatmap : [30, 50, 40, 70, 60, 90]).map((h, i) => (
+                                 <div key={i} className="w-0.5 bg-brand-indigo/40 rounded-full" style={{ height: `${Math.max(20, h)}%` }} />
+                              ))}
+                           </div>
+                         )}
+                         {card.status && (
+                           <div className={cn("w-2 h-2 rounded-full", isSyncing ? "bg-brand-indigo animate-spin" : "bg-brand-emerald")} />
+                         )}
+                      </div>
+                      {card.progress !== undefined && (
+                        <div className="mt-4 h-1 bg-white/5 rounded-full overflow-hidden">
+                           <motion.div 
+                             initial={{ width: 0 }}
+                             animate={{ width: `${card.progress}%` }}
+                             className="h-full bg-brand-emerald shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                           />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50 relative overflow-hidden group/card shadow-lg shadow-emerald-900/5 min-h-[100px] flex flex-col justify-center">
-                    {isSyncing && stats.totalLeads === 0 && <div className="absolute inset-0 bg-zinc-900 z-10 flex flex-col p-4 space-y-2"><div className="h-2 bg-zinc-800 rounded w-1/3 animate-pulse" /><div className="h-6 bg-zinc-800 rounded w-2/3 animate-pulse" /><div className="h-2 bg-zinc-800 rounded w-full animate-pulse mt-auto" /></div>}
-                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 block">Conversion Rate</span>
-                    <div className="flex items-end gap-2">
-                      <span className="text-xl font-mono font-bold text-brand-emerald leading-none">{stats.conversionRate}%</span>
-                      <TrendingUp size={14} className="text-brand-emerald mb-1 transition-transform group-hover/card:translate-y-[-2px]" />
-                    </div>
-                    <div className="mt-2 h-1 bg-zinc-800 rounded-full overflow-hidden">
-                       <motion.div 
-                         initial={{ width: 0 }}
-                         animate={{ width: `${stats.conversionRate}%` }}
-                         className="h-full bg-brand-emerald"
-                       />
-                    </div>
-                  </div>
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50 relative overflow-hidden group/card shadow-lg shadow-indigo-900/5 min-h-[100px] flex flex-col justify-center">
-                    {isSyncing && stats.totalLeads === 0 && <div className="absolute inset-0 bg-zinc-900 z-10 flex flex-col p-4 space-y-2"><div className="h-2 bg-zinc-800 rounded w-1/3 animate-pulse" /><div className="h-6 bg-zinc-800 rounded w-2/3 animate-pulse" /><div className="h-4 bg-zinc-800 rounded w-1/2 animate-pulse mt-auto" /></div>}
-                    <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1 block">Revenue Est.</span>
-                    <span className="text-xl font-mono font-bold text-brand-indigo leading-none">₹{(stats.revenueEstimate / 1000000).toFixed(2)}M</span>
-                    <div className="mt-2 flex items-center justify-between">
-                       <p className="text-[8px] text-zinc-500 uppercase font-bold tracking-tighter">Proj. ROI: 4.8x</p>
-                       <div className="flex gap-0.5 h-3 items-end">
-                          {(stats.heatmap && stats.heatmap.length > 0 ? stats.heatmap : [30, 50, 40, 70, 60, 90]).map((h, i) => (
-                             <div key={i} className="w-1 bg-brand-indigo/30 rounded-t-xs" style={{ height: `${Math.max(10, h)}%` }} />
-                          ))}
-                       </div>
-                    </div>
-                  </div>
-                  <div className="bg-zinc-900/50 p-4 rounded border border-zinc-800/50 relative overflow-hidden group/card min-h-[100px] flex flex-col justify-center">
-                    {isSyncing && stats.totalLeads === 0 && <div className="absolute inset-0 bg-zinc-900 z-10 flex flex-col p-4 space-y-2"><div className="h-2 bg-zinc-800 rounded w-1/3 animate-pulse" /><div className="h-3 bg-zinc-800 rounded w-full animate-pulse" /><div className="h-3 bg-zinc-800 rounded w-full animate-pulse" /></div>}
-                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-1 block">Agent Connectivity</span>
-                    <div className="flex flex-col gap-1.5 mt-1">
-                       <div className="flex items-center justify-between text-[8px] font-bold">
-                          <span className="text-zinc-400">SALES ENGINE</span>
-                          <span className={cn(stats.totalLeads > 0 ? "text-brand-emerald" : "text-amber-500")}>
-                             {stats.totalLeads > 0 ? "ACTIVE" : "PENDING"}
-                          </span>
-                       </div>
-                       <div className="flex items-center justify-between text-[8px] font-bold">
-                          <span className="text-zinc-400">DATA SYNC</span>
-                          <span className={cn(isSyncing ? "text-brand-indigo animate-pulse" : "text-brand-emerald")}>
-                             {isSyncing ? "UPDATING" : "STABLE"}
-                          </span>
-                       </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Activity Feed */}
-                  <div className="lg:col-span-2 bg-zinc-900/30 border border-zinc-800/50 rounded p-4">
-                    <div className="flex items-center justify-between mb-4 border-b border-zinc-800 pb-2">
-                      <h3 className="text-[10px] font-bold text-white uppercase tracking-widest flex items-center gap-2">
-                        <Activity size={12} className="text-brand-indigo" />
-                        Live Activity Feed
+                  <div className="lg:col-span-2 bg-white/5 border border-white/5 rounded-2xl p-6 shadow-xl backdrop-blur-sm">
+                    <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
+                      <h3 className="text-[11px] font-bold text-white uppercase tracking-[0.2em] flex items-center gap-3">
+                        <Activity size={16} className="text-brand-indigo animate-pulse" />
+                        NODE EVENT LOG
                       </h3>
-                      <button className="text-[9px] text-zinc-500 hover:text-zinc-300 uppercase font-bold">Clear Logs</button>
+                      <button className="text-[10px] text-zinc-500 hover:text-white uppercase font-black transition-colors">ARCHIVE LOGS</button>
                     </div>
-                    <div className="space-y-3 max-h-[160px] overflow-y-auto pr-2 custom-scrollbar relative">
+                    <div className="space-y-4 max-h-[220px] overflow-y-auto pr-3 custom-scrollbar relative">
                       {activities.length === 0 && (
-                        <div className="flex items-center justify-center h-24 text-[9px] text-zinc-600 uppercase font-mono tracking-widest italic">
-                           No activity logged...
+                        <div className="flex flex-col items-center justify-center h-32 text-[10px] text-zinc-600 uppercase font-bold tracking-widest italic opacity-50">
+                           <Database size={24} className="mb-2" />
+                           Awaiting node pulses...
                         </div>
                       )}
                       {activities.map((activity) => (
-                        <div key={activity.id} className="flex gap-3 text-[11px] group/item">
-                          <div className="flex flex-col items-center gap-1 py-1">
-                            {activity.type === 'lead' && <User size={10} className="text-brand-emerald" />}
-                            {activity.type === 'whatsapp' && <MessageSquare size={10} className="text-brand-indigo" />}
+                        <div key={activity.id} className="flex gap-4 text-[12px] group/item p-3 border border-transparent hover:border-white/5 hover:bg-white/5 rounded-xl transition-all">
+                          <div className="flex flex-col items-center gap-1.5 py-1">
+                            <div className={cn(
+                              "w-8 h-8 rounded-lg flex items-center justify-center shadow-lg",
+                              activity.type === 'lead' ? "bg-brand-emerald/10 text-brand-emerald" : "bg-brand-indigo/10 text-brand-indigo"
+                            )}>
+                               {activity.type === 'lead' && <User size={14} />}
+                               {activity.type === 'whatsapp' && <MessageSquare size={14} />}
+                               {activity.type === 'system' && <Activity size={14} />}
+                            </div>
                             <div className="w-[1px] h-full bg-zinc-800" />
                           </div>
-                          <div className="flex-1 pb-2">
-                            <div className="flex items-center justify-between mb-0.5">
-                               <span className="font-bold text-zinc-300 group-hover/item:text-white transition-colors">{activity.message}</span>
-                               <span className="text-[9px] font-mono text-zinc-600">{activity.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                          <div className="flex-1 pb-1">
+                            <div className="flex items-center justify-between mb-1">
+                               <span className="font-bold text-zinc-100 group-hover/item:text-brand-indigo transition-colors">{activity.message}</span>
+                               <span className="text-[10px] font-mono text-zinc-500 font-bold">{activity.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                             </div>
                             {activity.status && (
-                              <span className={cn(
-                                "text-[9px] font-bold px-1.5 py-0.5 rounded-sm uppercase tracking-tight",
-                                activity.status === 'HOT' ? "bg-brand-emerald/10 text-brand-emerald" :
-                                activity.status === 'MEDIUM' ? "bg-amber-400/10 text-amber-400" :
-                                "bg-zinc-500/10 text-zinc-500"
-                              )}>
-                                {activity.status} LEAD IDENTIFIED
-                              </span>
+                              <div className="flex items-center gap-2 mt-2">
+                                <span className={cn(
+                                  "text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider",
+                                  activity.status === 'HOT' ? "bg-brand-emerald text-zinc-950 neon-glow-emerald" :
+                                  activity.status === 'MEDIUM' ? "bg-amber-400 text-zinc-950" :
+                                  "bg-white/10 text-zinc-300"
+                                )}>
+                                  {activity.status} TARGET
+                                </span>
+                                <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-tighter">Verified by BizAI Core</span>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -1591,32 +1712,32 @@ Business analytics overview:
                     </div>
                   </div>
 
-                  {/* Lead Classification & Funnel */}
-                  <div className="bg-zinc-900/30 border border-zinc-800/50 rounded p-4 flex flex-col">
-                    <h3 className="text-[10px] font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2">
-                       <Filter size={12} className="text-brand-indigo" />
-                       Sales Funnel Progress
+                  {/* Funnel Optimization */}
+                  <div className="bg-white/5 border border-white/5 rounded-2xl p-6 shadow-xl backdrop-blur-sm flex flex-col">
+                    <h3 className="text-[11px] font-bold text-white uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                       <Filter size={16} className="text-brand-indigo" />
+                       PIPELINE DYNAMICS
                     </h3>
                     
-                    <div className="flex-1 space-y-4">
+                    <div className="flex-1 space-y-6">
                        <div className="relative pt-2">
-                          <div className="flex flex-col gap-1">
+                          <div className="flex flex-col gap-3">
                              {[
-                               { label: 'Visitor', val: stats.totalLeads * 4, color: 'bg-zinc-700' },
-                               { label: 'Interactions', val: stats.totalLeads * 2, color: 'bg-zinc-600' },
-                               { label: 'Captured Leads', val: stats.totalLeads, color: 'bg-brand-indigo' },
-                               { label: 'Converted', val: stats.pipeline.converted, color: 'bg-brand-emerald' }
+                               { label: 'Network Scan', val: stats.totalLeads * 4, color: 'bg-zinc-800' },
+                               { label: 'Strategic Hits', val: stats.totalLeads * 2, color: 'bg-zinc-700' },
+                               { label: 'Validated Assets', val: stats.totalLeads, color: 'bg-brand-indigo shadow-[0_0_10px_rgba(99,102,241,0.5)]' },
+                               { label: 'Conversion Success', val: stats.pipeline.converted, color: 'bg-brand-emerald shadow-[0_0_10px_rgba(16,185,129,0.5)]' }
                              ].map((step, idx) => (
                               <div key={idx} className="group/funnel">
-                                 <div className="flex justify-between text-[8px] font-bold text-zinc-500 uppercase mb-1">
+                                 <div className="flex justify-between text-[9px] font-black text-zinc-500 uppercase mb-2 tracking-widest">
                                     <span>{step.label}</span>
                                     <span className="text-white font-mono">{step.val.toLocaleString()}</span>
                                  </div>
-                                 <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                                 <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
                                     <motion.div 
                                        initial={{ width: 0 }}
                                        animate={{ width: `${Math.min(100, (step.val / (Math.max(1, stats.totalLeads) * 4 || 1)) * 100)}%` }} 
-                                       className={cn("h-full transition-all duration-1000", step.color)} 
+                                       className={cn("h-full rounded-full transition-all duration-1000", step.color)} 
                                     />
                                  </div>
                               </div>
@@ -1625,114 +1746,117 @@ Business analytics overview:
                        </div>
                     </div>
                     
-                    <div className="mt-6 pt-4 border-t border-zinc-800">
-                       <div className="flex items-center justify-between mb-3">
-                          <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Conversion Pipeline</span>
+                    <div className="mt-8 pt-6 border-t border-white/5">
+                       <div className="flex items-center justify-between mb-4">
+                          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Flow Optimization</span>
+                          <span className="text-[10px] font-mono text-brand-emerald">+12.4%</span>
                        </div>
-                       <div className="flex gap-1">
+                       <div className="flex gap-1.5 h-3">
                           {[
-                            { color: 'bg-zinc-500', count: stats.pipeline.new, label: 'NEW' },
-                            { color: 'bg-sky-400', count: stats.pipeline.contacted, label: 'CONTACTED' },
-                            { color: 'bg-amber-400', count: stats.pipeline.followup, label: 'FOLLOW-UP' },
-                            { color: 'bg-brand-emerald', count: stats.pipeline.converted, label: 'CONVERTED' },
-                            { color: 'bg-rose-500', count: stats.pipeline.closed, label: 'CLOSED' },
-                          ].map((stage, i) => (
-                            <div key={i} className="flex-1 group/stage relative">
-                               <div 
-                                  className={cn("h-1 rounded-sm", stage.count > 0 ? stage.color : "bg-zinc-800")} 
-                                  style={{ opacity: stage.count > 0 ? 1 : 0.3 }}
-                               />
-                               <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-800 px-2 py-1 rounded opacity-0 group-hover/stage:opacity-100 transition-opacity pointer-events-none z-30 whitespace-nowrap">
-                                  <span className="text-[8px] font-bold text-white uppercase">{stage.label}: {stage.count}</span>
-                               </div>
-                            </div>
+                            { color: 'bg-zinc-800', percentage: (stats.pipeline.new / (stats.totalLeads || 1)) * 100 },
+                            { color: 'bg-sky-500/50', percentage: (stats.pipeline.contacted / (stats.totalLeads || 1)) * 100 },
+                            { color: 'bg-amber-500/50', percentage: (stats.pipeline.followup / (stats.totalLeads || 1)) * 100 },
+                            { color: 'bg-brand-emerald', percentage: (stats.pipeline.converted / (stats.totalLeads || 1)) * 100 },
+                            { color: 'bg-rose-500/50', percentage: (stats.pipeline.closed / (stats.totalLeads || 1)) * 100 }
+                          ].map((seg, i) => (
+                             <div key={i} className={cn("h-full rounded-full shadow-lg", seg.color)} style={{ width: `${Math.max(5, seg.percentage)}%` }} />
                           ))}
                        </div>
                     </div>
                   </div>
                 </div>
-
-                {/* Latest Leads Table - Enhanced UI */}
-                <div id="leads-table" className="mt-8 border-t border-zinc-800 pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-[10px] font-bold text-white uppercase tracking-widest flex items-center gap-2">
-                       <Users size={12} className="text-brand-indigo" />
-                       Latest CRM Leads
-                    </h3>
-                    <div className="flex items-center gap-2">
-                       <span className="text-[9px] text-zinc-500 font-mono">Real-time Sync Active</span>
-                       <div className="w-1.5 h-1.5 rounded-full bg-brand-emerald animate-pulse" />
-                    </div>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-[10px] text-left">
-                      <thead>
-                        <tr className="border-b border-zinc-800/50 text-zinc-500 uppercase tracking-tighter">
-                          <th className="pb-2 font-bold">Name</th>
-                          <th className="pb-2 font-bold hidden sm:table-cell">Service</th>
-                          <th className="pb-2 font-bold hidden md:table-cell">Budget</th>
-                          <th className="pb-2 font-bold">Status</th>
-                          <th className="pb-2 font-bold text-right">Revenue</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-zinc-900/10">
-                        {isSyncing && leads.length === 0 ? (
-                          [...Array(5)].map((_, i) => (
-                            <tr key={i} className="animate-pulse">
-                              <td className="py-3 pr-4"><div className="h-4 bg-zinc-900/20 rounded w-24 mb-1" /><div className="h-2 bg-zinc-900/10 rounded w-16" /></td>
-                              <td className="py-3 pr-4 hidden sm:table-cell"><div className="h-3 bg-zinc-900/10 rounded w-20" /></td>
-                              <td className="py-3 pr-4 hidden md:table-cell"><div className="h-3 bg-zinc-900/10 rounded w-16" /></td>
-                              <td className="py-3 pr-4"><div className="h-4 bg-zinc-900/20 rounded w-12" /></td>
-                              <td className="py-3 text-right"><div className="h-4 bg-zinc-900/20 rounded w-16 ml-auto" /></td>
-                            </tr>
-                          ))
-                        ) : leads.length > 0 ? (
-                          leads.slice(0, 5).map((lead, i) => (
-                            <tr key={i} className="group hover:bg-zinc-900/20 transition-colors">
-                              <td className="py-3 pr-4">
-                                <div className="flex flex-col">
-                                  <span className="text-zinc-200 font-bold leading-none">{lead.name}</span>
-                                  <span className="text-[8px] text-zinc-600 mt-1">{lead.phone}</span>
-                                </div>
-                              </td>
-                              <td className="py-3 pr-4 text-zinc-400 hidden sm:table-cell">{lead.service}</td>
-                              <td className="py-3 pr-4 font-mono text-zinc-300 hidden md:table-cell">₹{Number(lead.budget).toLocaleString()}</td>
-                              <td className="py-3 pr-4">
-                                <span className={cn(
-                                  "px-2 py-0.5 rounded-sm font-bold uppercase text-[8px] tracking-tight",
-                                  lead.status?.toUpperCase() === 'HOT' ? "bg-brand-emerald/10 text-brand-emerald" :
-                                  lead.status?.toUpperCase() === 'CONVERTED' ? "bg-brand-indigo/10 text-brand-indigo" :
-                                  "bg-zinc-800 text-zinc-400"
-                                )}>
-                                  {lead.status}
-                                </span>
-                              </td>
-                              <td className="py-3 text-right font-mono text-brand-indigo font-bold">
-                                ₹{Number(lead.revenue).toLocaleString()}
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={5} className="py-8 text-center text-zinc-600 font-mono uppercase tracking-widest italic">
-                               <div className="flex flex-col items-center gap-2 text-center">
-                                  <Activity className="text-zinc-600 animate-pulse" size={16} />
-                                  <span className="text-zinc-600 font-mono uppercase tracking-widest text-[9px] italic">
-                                     No Data Synchronized
-                                  </span>
-                                  <span className="text-zinc-700 font-mono text-[8px] uppercase">
-                                     Check your Google Script connection
-                                  </span>
-                               </div>
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
               </div>
             </motion.div>
+
+            {/* Latest Leads Table - Enhanced UI */}
+            <div id="leads-table" className="mt-12 pt-8 border-t border-white/5">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-brand-indigo shadow-2xl backdrop-blur-md">
+                    <Database size={24} className="animate-pulse" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white tracking-tight">Active Matrix Assets</h3>
+                    <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-black mt-1">Operational Data Stream: Verified</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 bg-zinc-900/50 px-4 py-2 rounded-xl border border-white/5 shadow-xl backdrop-blur-sm">
+                   <div className="w-2.5 h-2.5 rounded-full bg-brand-emerald animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                   <span className="text-[10px] text-zinc-400 font-black uppercase tracking-widest leading-none">Security Node Active</span>
+                </div>
+              </div>
+              
+              <div className="overflow-x-auto custom-scrollbar -mx-4 md:mx-0">
+                <div className="inline-block min-w-full align-middle md:px-0">
+                  <table className="w-full text-[13px] text-left border-separate border-spacing-y-3">
+                    <thead>
+                      <tr className="text-zinc-500 uppercase tracking-[0.25em] font-black text-[9px]">
+                        <th className="px-6 py-4">Identity Matrix</th>
+                        <th className="px-6 py-4 hidden sm:table-cell">Product Vector</th>
+                        <th className="px-6 py-4 hidden md:table-cell">Budget Capacity</th>
+                        <th className="px-6 py-4">Current Vector</th>
+                        <th className="px-6 py-4 text-right">Proj. Revenue</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {isSyncing && leads.length === 0 ? (
+                        [...Array(5)].map((_, i) => (
+                          <tr key={i} className="animate-pulse">
+                            <td className="px-6 py-6 bg-white/5 rounded-l-2xl border-t border-b border-l border-white/5"><div className="h-5 bg-zinc-800 rounded w-36 mb-2" /><div className="h-3 bg-zinc-800 rounded w-24" /></td>
+                            <td className="px-6 py-6 bg-white/5 border-t border-b border-white/5 hidden sm:table-cell"><div className="h-4 bg-zinc-800 rounded w-28" /></td>
+                            <td className="px-6 py-6 bg-white/5 border-t border-b border-white/5 hidden md:table-cell"><div className="h-4 bg-zinc-800 rounded w-20" /></td>
+                            <td className="px-6 py-6 bg-white/5 border-t border-b border-white/5"><div className="h-7 bg-zinc-800 rounded-lg w-24" /></td>
+                            <td className="px-6 py-6 bg-white/5 rounded-r-2xl border-t border-b border-r border-white/5 text-right"><div className="h-5 bg-zinc-800 rounded w-28 ml-auto" /></td>
+                          </tr>
+                        ))
+                      ) : leads.length > 0 ? (
+                        leads.slice(0, 10).map((lead, i) => (
+                          <tr key={i} className="group hover:translate-y-[-2px] transition-all duration-300">
+                            <td className="px-6 py-6 bg-white/5 group-hover:bg-white/[0.08] lg:group-hover:bg-white/[0.1] rounded-l-2xl border-l border-t border-b border-white/5 shadow-sm transition-all">
+                              <div className="flex flex-col">
+                                <span className="text-zinc-100 font-bold text-base tracking-tight group-hover:text-brand-indigo transition-colors">{lead.name}</span>
+                                <div className="flex items-center gap-2 mt-2 font-mono opacity-60">
+                                  <Phone size={10} className="text-zinc-400" />
+                                  <span className="text-[10px] text-zinc-400 font-bold">{lead.phone}</span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-6 bg-white/5 group-hover:bg-white/[0.08] lg:group-hover:bg-white/[0.1] border-t border-b border-white/5 text-zinc-400 font-bold hidden sm:table-cell transition-all uppercase tracking-tight">{lead.service}</td>
+                            <td className="px-6 py-6 bg-white/5 group-hover:bg-white/[0.08] lg:group-hover:bg-white/[0.1] border-t border-b border-white/5 text-brand-indigo font-mono font-bold hidden md:table-cell transition-all uppercase">₹{lead.budget ? lead.budget.toLocaleString() : '--'}</td>
+                            <td className="px-6 py-6 bg-white/5 group-hover:bg-white/[0.08] lg:group-hover:bg-white/[0.1] border-t border-b border-white/5 transition-all">
+                              <span className={cn(
+                                "px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] inline-flex items-center gap-2 shadow-lg",
+                                lead.status?.toUpperCase() === 'CONVERTED' ? "bg-brand-emerald text-zinc-950 neon-glow-emerald" :
+                                lead.status?.toUpperCase() === 'NEW' ? "bg-zinc-800 text-zinc-400 border border-white/5" :
+                                lead.status?.toUpperCase() === 'CONTACTED' ? "bg-sky-500/20 text-sky-400 border border-sky-500/30" :
+                                "bg-brand-indigo/10 text-brand-indigo border border-brand-indigo/20"
+                              )}>
+                                <div className={cn("w-2 h-2 rounded-full", lead.status?.toUpperCase() === 'CONVERTED' ? "bg-white animate-pulse" : "bg-current")} />
+                                {lead.status || 'UNIDENTIFIED'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-6 bg-white/5 group-hover:bg-white/[0.08] lg:group-hover:bg-white/[0.1] rounded-r-2xl border-r border-t border-b border-white/5 text-right transition-all">
+                              <span className="text-white font-mono font-black text-base shadow-brand-indigo/20 drop-shadow-lg">{lead.revenue ? `₹${lead.revenue.toLocaleString()}` : '--'}</span>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={5} className="py-24 text-center">
+                            <div className="flex flex-col items-center gap-4 opacity-30">
+                              <Database size={48} className="text-zinc-500" />
+                              <span className="text-zinc-500 font-black uppercase tracking-[0.4em] text-[12px]">No data units detected in matrix</span>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
 
             {/* Mode Meta Grid */}
             {currentMode && (
@@ -1740,20 +1864,20 @@ Business analytics overview:
                 key={currentMode + "-banner"}
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-1"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8"
               >
-                <div className="bg-white border border-zinc-200 p-6 flex flex-col">
-                  <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Target Strategy</span>
-                  <h3 className="font-serif italic font-bold text-lg text-zinc-900">{MODE_INSIGHTS[currentMode].title}</h3>
-                  <p className="text-[11px] text-zinc-500 mt-2 leading-relaxed">{MODE_INSIGHTS[currentMode].hint}</p>
+                <div className="bg-white/5 border border-white/5 p-6 rounded-2xl flex flex-col shadow-xl backdrop-blur-md">
+                  <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-2">Strategy Node</span>
+                  <h3 className="text-xl font-bold text-white tracking-tight">{MODE_INSIGHTS[currentMode].title}</h3>
+                  <p className="text-[12px] text-zinc-400 mt-3 leading-relaxed font-medium">{MODE_INSIGHTS[currentMode].hint}</p>
                 </div>
-                <div className="bg-white border border-zinc-200 p-6 md:col-span-2">
-                  <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-3 block">Operational Focus</span>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="bg-white/5 border border-white/5 p-6 md:col-span-2 rounded-2xl shadow-xl backdrop-blur-md">
+                  <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-4 block">Operational Matrix Focus</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {MODE_INSIGHTS[currentMode].tips.map(tip => (
-                      <div key={tip} className="flex items-center gap-2 group">
-                        <div className="w-1.5 h-1.5 rounded-full bg-brand-indigo group-hover:scale-125 transition-transform" />
-                        <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-tight">{tip}</span>
+                      <div key={tip} className="flex items-center gap-3 group bg-white/5 p-3 rounded-xl border border-white/5 hover:border-brand-indigo/30 transition-all">
+                        <div className="w-2 h-2 rounded-full bg-brand-indigo shadow-[0_0_8px_rgba(99,102,241,0.5)] group-hover:scale-125 transition-transform" />
+                        <span className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">{tip}</span>
                       </div>
                     ))}
                   </div>
@@ -1772,12 +1896,12 @@ Business analytics overview:
                 )}
               >
                 <div className={cn(
-                  "w-10 h-10 shrink-0 flex items-center justify-center border",
+                  "w-12 h-12 shrink-0 flex items-center justify-center rounded-2xl border transition-all duration-300",
                   msg.role === 'assistant' 
-                    ? "bg-zinc-950 border-zinc-800 text-brand-indigo shadow-lg" 
-                    : "bg-white border-zinc-200 text-zinc-400 shadow-sm"
+                    ? "bg-brand-indigo/10 border-brand-indigo/30 text-brand-indigo shadow-[0_0_15px_rgba(99,102,241,0.15)]" 
+                    : "bg-white/5 border-white/10 text-zinc-400 shadow-xl"
                 )}>
-                  {msg.role === 'assistant' ? <Bot size={20} /> : <User size={20} />}
+                  {msg.role === 'assistant' ? <Bot size={24} className="animate-pulse" /> : <User size={24} />}
                 </div>
                 
                 <div className={cn(
@@ -1831,8 +1955,18 @@ Business analytics overview:
                             )
                           }}
                         >
-                          {msg.content}
+                          {msg.content.replace('[RETRY COMMAND](button:retry)', '')}
                         </Markdown>
+
+                        {msg.content.includes('button:retry') && (
+                          <button 
+                            onClick={handleRetry}
+                            className="mt-6 bg-brand-indigo text-white px-8 py-3 rounded-none font-bold flex items-center gap-2 hover:bg-brand-indigo/80 transition-all shadow-[0_0_20px_rgba(99,102,241,0.2)] active:scale-95 border-b-2 border-brand-indigo/50 font-mono uppercase tracking-widest text-[10px]"
+                          >
+                            <RefreshCcw size={14} />
+                            Retry Command Execution
+                          </button>
+                        )}
 
                         {msg.id === 'welcome' && (
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-6">
@@ -1905,13 +2039,13 @@ Business analytics overview:
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 100, opacity: 0 }}
-              className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 md:p-8 pt-0 bg-gradient-to-t from-[#fafafa] via-[#fafafa] to-transparent z-40"
+              className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 md:p-8 pt-0 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent z-40"
             >
               <div className="max-w-4xl mx-auto">
                 <div className="relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-brand-indigo/20 to-brand-emerald/20 blur opacity-0 group-focus-within:opacity-100 transition-opacity rounded-sm" />
-                  <div className="relative flex shadow-xl shadow-zinc-200/50 border border-zinc-200 overflow-hidden bg-white items-end border-b-0 sm:border-b">
-                    <div className="hidden sm:flex items-center px-4 h-12 md:h-14 bg-zinc-50 border-r border-zinc-200 text-[10px] font-mono text-zinc-400 font-bold uppercase tracking-widest">
+                  <div className="relative flex shadow-2xl shadow-indigo-500/10 border border-white/10 overflow-hidden bg-[#111827] items-end border-b-0 sm:border-b rounded-xl command-input-wrapper">
+                    <div className="hidden sm:flex items-center px-4 h-12 md:h-14 bg-black/30 border-r border-white/5 text-[10px] font-mono text-brand-indigo font-bold uppercase tracking-widest">
                       CMD {'>'}
                     </div>
                     <textarea
@@ -1926,16 +2060,16 @@ Business analytics overview:
                       rows={Math.min(5, input.split('\n').length || 1)}
                       placeholder={isLoading ? "SYSTEM PROCESSING..." : "EXECUTE COMMAND..."}
                       disabled={isLoading}
-                      className="flex-1 bg-transparent py-3 md:py-4 px-4 md:px-6 text-sm font-medium focus:outline-none placeholder:text-zinc-300 uppercase tracking-tight resize-none max-h-40"
+                      className="chat-input flex-1 bg-transparent py-3 md:py-4 px-4 md:px-6 text-[15px] font-medium focus:outline-none placeholder:text-zinc-500 uppercase tracking-tight resize-none max-h-40 border-none !p-3 !border-0 !rounded-none"
                     />
                     <button
                       onClick={() => handleSend()}
                       disabled={!input.trim() || isLoading}
                       className={cn(
-                        "px-4 sm:px-8 h-12 md:h-14 transition-all flex items-center justify-center border-l",
+                        "px-4 sm:px-8 h-12 md:h-14 transition-all flex items-center justify-center border-l border-white/5",
                         input.trim() && !isLoading 
-                          ? "bg-zinc-950 text-white hover:bg-brand-indigo border-zinc-800" 
-                          : "bg-zinc-50 text-zinc-300 border-zinc-100 cursor-not-allowed"
+                          ? "bg-brand-indigo text-white hover:bg-brand-indigo/80 shadow-[0_0_15px_rgba(99,102,241,0.3)]" 
+                          : "bg-white/5 text-zinc-600 cursor-not-allowed"
                       )}
                     >
                       <Send size={16} />

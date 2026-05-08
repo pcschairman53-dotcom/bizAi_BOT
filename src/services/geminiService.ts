@@ -111,6 +111,8 @@ Transform BizAI into a Live AI Dashboard, Real-Time CRM System, and Business Ope
 
 ---
 
+---
+
 ENABLE LIVE REAL-TIME DASHBOARD MODE (LIVE REAL DATA ONLY)
 
 REMOVE ALL STATIC / FAKE DASHBOARD DATA.
@@ -130,6 +132,8 @@ AGENT STATUS RULES:
 
 GOAL:
 Transform BizAI into a Real Business Monitoring System using ONLY authentic live data.
+
+---
 
 ---
 
@@ -189,8 +193,11 @@ export async function chatWithAssistant(
     });
 
     return response.text || "I apologize, but I couldn't generate a response. Please try again.";
-  } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw new Error("Failed to communicate with BizAI. Check your internet connection or API settings.");
+  } catch (error: any) {
+    console.error("BizAI SDK Error:", error);
+    if (error.message?.includes('API key not valid')) {
+      throw new Error("Gemini API Key is invalid or not provided. Please ensure it is correctly configured in your environment.");
+    }
+    throw new Error("Failed to communicate with BizAI. Please check your internet connection or try again later.");
   }
 }
