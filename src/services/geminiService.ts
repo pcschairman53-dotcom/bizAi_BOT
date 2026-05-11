@@ -1,7 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 import { Message, ConsultingMode, Language } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const getApiKey = () => {
+  // Priority order: process.env (platform default) -> import.meta.env (alternative/local)
+  const key = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY;
+  return key;
+};
+
+const apiKey = getApiKey();
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 const SYSTEM_PROMPT = `You are BizAI – an AI-Powered Growth Consultant for Business Scaling 🚀.
 Your mission: Help users grow business, generate clients, and increase revenue.
@@ -172,6 +179,10 @@ export async function chatWithAssistant(
   currentMode: ConsultingMode | null,
   currentLanguage: Language = 'en'
 ) {
+  if (!ai) {
+    throw new Error("Gemini API Key is missing. Please set GEMINI_API_KEY in your environment variables.");
+  }
+
   try {
     const history = messages.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
@@ -195,9 +206,16 @@ export async function chatWithAssistant(
     return response.text || "I apologize, but I couldn't generate a response. Please try again.";
   } catch (error: any) {
     console.error("BizAI SDK Error:", error);
-    if (error.message?.includes('API key not valid')) {
-      throw new Error("Gemini API Key is invalid or not provided. Please ensure it is correctly configured in your environment.");
+    
+    // Check for common error types
+    if (error.message?.includes('API key not valid') || error.message?.includes('key not found')) {
+      throw new Error("Gemini API Key is invalid. Verification failed.");
     }
-    throw new Error("Failed to communicate with BizAI. Please check your internet connection or try again later.");
+    
+    if (error.message?.includes('exhausted') || error.status === 429) {
+      throw new Error("Rate limit exceeded. Please wait a moment before trying again.");
+    }
+
+    throw new Error("Failed to communicate with BizAI. Please check your internet connection and try again later.");
   }
 }

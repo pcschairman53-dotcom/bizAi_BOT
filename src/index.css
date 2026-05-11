@@ -12,29 +12,29 @@
 }
 
 @layer base {
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+  
   * {
     @apply border-zinc-800 outline-none;
   }
+
   body {
     @apply bg-zinc-950 text-zinc-100;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    min-height: 100vh;
-    width: 100%;
-    overflow-x: hidden;
   }
 
+  /* Resetting aggressive !important styles to allow Tailwind utility overrides */
   input,
   textarea,
   .command-input,
   .chat-input,
   .prompt-input {
-    color: #ffffff !important;
-    background: #111827 !important;
-    border: 1px solid #7c3aed !important;
-    border-radius: 12px !important;
-    padding: 12px !important;
-    transition: all 0.2s ease-in-out !important;
-    outline: none !important;
+    @apply text-white bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 transition-all duration-200 outline-none;
   }
   
   input:focus,
@@ -42,18 +42,13 @@
   .command-input:focus,
   .chat-input:focus,
   .prompt-input:focus {
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.5) !important;
-    border-color: #a78bfa !important;
-    background: #1f2937 !important;
+    @apply border-indigo-500/50 ring-2 ring-indigo-500/20 bg-zinc-900/80;
   }
 
-  input::placeholder,
-  textarea::placeholder,
-  .command-input::placeholder,
-  .chat-input::placeholder,
-  .prompt-input::placeholder {
-    color: #9ca3af !important;
-    opacity: 0.8;
+  .break-words-container {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 }
 

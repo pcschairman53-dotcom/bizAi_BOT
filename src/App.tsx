@@ -21,9 +21,6 @@ import {
   Flame,
   LayoutDashboard,
   Filter,
-  Mic,
-  MicOff,
-  Volume2,
   Shield,
   Settings,
   Database,
@@ -169,14 +166,14 @@ function LeadPipelineOverview({ stats }: { stats: DashboardStats }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
           {steps.map((step, i) => (
             <motion.div 
-              key={step.label}
+              key={`pipeline-step-${i}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-all group/card relative overflow-hidden"
+              className="bg-white/5 border border-white/5 p-4 rounded-xl hover:bg-white/10 transition-all group/card relative overflow-hidden h-full flex flex-col justify-between"
             >
               <div className={cn("absolute top-0 right-0 p-2 opacity-5 scale-150", step.color)}>
                 <step.icon size={48} />
@@ -244,17 +241,17 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
          <Bot size={140} className="text-brand-indigo" />
       </div>
 
-      <div className="flex items-center justify-between mb-10">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between mb-8 md:mb-10">
+        <div className="flex items-center gap-3 md:gap-4">
           <div className="relative">
             <div className="absolute -inset-2 bg-brand-indigo/30 rounded-full blur animate-pulse" />
-            <div className="relative w-12 h-12 bg-zinc-950 border border-white/10 rounded-2xl flex items-center justify-center text-brand-indigo shadow-inner">
-               <Bot size={28} />
+            <div className="relative w-10 h-10 md:w-12 md:h-12 bg-zinc-950 border border-white/10 rounded-2xl flex items-center justify-center text-brand-indigo shadow-inner">
+               <Bot className="w-6 h-6 md:w-7 md:h-7" />
             </div>
           </div>
           <div>
-            <h3 className="text-[13px] font-bold text-white uppercase tracking-[0.2em] leading-none">AI Insight Matrix</h3>
-            <p className="text-[10px] text-zinc-500 mt-2 uppercase font-bold tracking-tight">Real-time Autonomous Strategic Analysis</p>
+            <h3 className="text-[12px] md:text-[13px] font-bold text-white uppercase tracking-[0.2em] leading-none">AI Insight Matrix</h3>
+            <p className="text-[9px] md:text-[10px] text-zinc-500 mt-2 uppercase font-bold tracking-tight">Real-time Autonomous Strategic Analysis</p>
           </div>
         </div>
         <div className="hidden sm:flex items-center gap-3">
@@ -263,33 +260,35 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         {recommendations.map((rec) => (
           <motion.div 
-            key={rec.id}
+            key={`rec-item-${rec.id}`}
             whileHover={{ y: -5, backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
             className={cn(
-              "p-6 rounded-2xl border border-white/5 bg-white/5 relative group transition-all duration-500",
+              "p-5 md:p-6 rounded-2xl border border-white/5 bg-white/5 relative group transition-all duration-500 h-full flex flex-col justify-between",
               rec.glow
             )}
           >
-            <div className="flex items-center justify-between mb-6">
-               <div className={cn("w-10 h-10 rounded-xl bg-zinc-950 border border-white/10 flex items-center justify-center shadow-lg", rec.color)}>
-                  <rec.icon size={20} />
-               </div>
-               <span className={cn(
-                 "text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest shadow-lg border border-white/5",
-                 rec.status === 'URGENT' ? "bg-rose-500 text-white" : 
-                 rec.status === 'PREMIUM' ? "bg-brand-emerald text-white" : 
-                 "bg-brand-indigo text-white"
-               )}>
-                 {rec.status}
-               </span>
+            <div>
+              <div className="flex items-center justify-between mb-4 md:mb-6">
+                 <div className={cn("w-9 h-9 md:w-10 md:h-10 rounded-xl bg-zinc-950 border border-white/10 flex items-center justify-center shadow-lg", rec.color)}>
+                    <rec.icon className="w-[18px] h-[18px] md:w-5 md:h-5" />
+                 </div>
+                 <span className={cn(
+                   "text-[8px] md:text-[9px] font-black px-2.5 py-1 md:py-1.5 rounded-full uppercase tracking-widest shadow-lg border border-white/5",
+                   rec.status === 'URGENT' ? "bg-rose-500 text-white" : 
+                   rec.status === 'PREMIUM' ? "bg-brand-emerald text-white" : 
+                   "bg-brand-indigo text-white"
+                 )}>
+                   {rec.status}
+                 </span>
+              </div>
+              <h4 className="text-[13px] md:text-[14px] font-bold text-white mb-2 md:mb-3 leading-tight tracking-tight">{rec.title}</h4>
+              <p className="text-[10px] md:text-[11px] text-zinc-400 leading-relaxed font-medium">{rec.description}</p>
             </div>
-            <h4 className="text-[14px] font-bold text-white mb-3 leading-tight tracking-tight">{rec.title}</h4>
-            <p className="text-[11px] text-zinc-400 leading-relaxed font-medium">{rec.description}</p>
             
-            <div className="mt-6 flex items-center gap-2 text-[10px] font-bold text-brand-indigo opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="mt-5 md:mt-6 flex items-center gap-2 text-[9px] md:text-[10px] font-bold text-brand-indigo opacity-0 group-hover:opacity-100 transition-opacity">
               <span>INITIALIZE AI TAKEOVER</span>
               <ArrowRight size={12} />
             </div>
@@ -300,23 +299,29 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
   );
 }
 
+const Skeleton = ({ className }: { className?: string }) => (
+  <div className={cn("animate-pulse bg-white/5 rounded-xl", className)} />
+);
+
 function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isSyncing, setIsSyncing }: AdminDashboardProps) {
+  const isLoading = stats.totalLeads === 0 && leads.length === 0 && activities.length <= 1;
+
   return (
-    <div className="space-y-8 pb-24">
+    <div className="space-y-6 md:space-y-8 pb-12 md:pb-24">
       {/* Header Info */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 mb-2 md:mb-4">
         <div>
-           <h2 className="text-2xl font-serif italic font-bold text-white leading-none">Matrix Command Center</h2>
-           <p className="text-[11px] text-zinc-500 mt-3 uppercase tracking-[0.3em] font-bold">Autonomous Control & Node Monitoring</p>
+           <h2 className="text-xl md:text-2xl font-serif italic font-bold text-white leading-none">Matrix Command Center</h2>
+           <p className="text-[9px] md:text-[11px] text-zinc-500 mt-2 md:mt-3 uppercase tracking-[0.2em] md:tracking-[0.3em] font-bold">Autonomous Control & Node Monitoring</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-           <div className="bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl flex items-center gap-3 shadow-lg shadow-black/40">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3">
+           <div className="bg-zinc-900 border border-zinc-800 px-3 md:px-4 py-1.5 md:py-2 rounded-xl flex items-center gap-2 md:gap-3 shadow-lg shadow-black/40">
               <div className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse neon-glow-emerald" />
-              <span className="text-[10px] font-bold text-white uppercase tracking-widest">Network Active</span>
+              <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest">Network Active</span>
            </div>
-           <div className="bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl flex items-center gap-3 shadow-lg shadow-black/40">
+           <div className="bg-zinc-900 border border-zinc-800 px-3 md:px-4 py-1.5 md:py-2 rounded-xl flex items-center gap-2 md:gap-3 shadow-lg shadow-black/40">
               <RefreshCcw size={12} className={cn("text-brand-indigo", isSyncing && "animate-spin")} />
-              <span className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">
+              <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest leading-none">
                 {isSyncing ? "Syncing Logic..." : "Stream Nominal"}
               </span>
            </div>
@@ -324,49 +329,55 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
       </div>
 
       {/* Primary KPI Grid */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-              { label: 'Total Matrix Leads', val: stats.totalLeads, icon: User, color: 'text-brand-indigo' },
-              { label: 'Live Pipeline', val: stats.pipeline.new + stats.pipeline.contacted + stats.pipeline.followup, icon: ActivityIcon, color: 'text-amber-500' },
-              { label: 'Conversion Velocity', val: stats.pipeline.converted, icon: CheckCircle2, color: 'text-brand-emerald' },
-              { label: 'Optimal Growth', val: leads.length > 0 ? (stats.pipeline.converted / leads.length * 100).toFixed(0) + '%' : '0%', icon: Sparkles, color: 'text-brand-indigo' }
-        ].map((kpi, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="glass-card p-5 rounded-2xl shadow-xl hover:bg-white/5 transition-all group border-white/5"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{kpi.label}</span>
-              <div className="p-2 bg-white/5 rounded-lg">
-                <kpi.icon size={14} className={kpi.color} />
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        {isLoading ? (
+          [0, 1, 2, 3].map((i) => <Skeleton key={`kpi-skeleton-${i}`} className="h-32" />)
+        ) : (
+          [
+                { label: 'Total Matrix Leads', val: stats.totalLeads, icon: User, color: 'text-brand-indigo' },
+                { label: 'Live Pipeline', val: stats.pipeline.new + stats.pipeline.contacted + stats.pipeline.followup, icon: ActivityIcon, color: 'text-amber-500' },
+                { label: 'Conversion Velocity', val: stats.pipeline.converted, icon: CheckCircle2, color: 'text-brand-emerald' },
+                { label: 'Optimal Growth', val: leads.length > 0 ? (stats.pipeline.converted / leads.length * 100).toFixed(0) + '%' : '0%', icon: Sparkles, color: 'text-brand-indigo' }
+          ].map((kpi, i) => (
+            <motion.div 
+              key={`kpi-stat-${i}`}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="glass-card p-5 rounded-2xl shadow-xl hover:bg-white/5 transition-all group border-white/5 h-full flex flex-col justify-between"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{kpi.label}</span>
+                <div className="p-2 bg-white/5 rounded-lg">
+                  <kpi.icon size={14} className={kpi.color} />
+                </div>
               </div>
-            </div>
-            <div className="text-3xl font-mono font-bold text-white tracking-tighter">{kpi.val}</div>
-            <div className="mt-5 h-1.5 bg-white/5 rounded-full overflow-hidden">
-               <motion.div 
-                initial={{ width: 0 }}
-                animate={{ 
-                  width: typeof kpi.val === 'number' 
-                    ? `${Math.min(100, (kpi.val / (Math.max(1, stats.totalLeads))) * 100)}%` 
-                    : (String(kpi.val).includes('%') ? kpi.val : '100%') 
-                }}
-                className={cn("h-full", kpi.color.replace('text-', 'bg-'))} 
-               />
-            </div>
-          </motion.div>
-        ))}
+              <div>
+                <div className="text-3xl font-mono font-bold text-white tracking-tighter">{kpi.val}</div>
+                <div className="mt-5 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                   <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ 
+                      width: typeof kpi.val === 'number' 
+                        ? `${Math.min(100, (kpi.val / (Math.max(1, stats.totalLeads || 100))) * 100)}%` 
+                        : (String(kpi.val).includes('%') ? kpi.val : '100%') 
+                    }}
+                    className={cn("h-full", kpi.color.replace('text-', 'bg-'))} 
+                   />
+                </div>
+              </div>
+            </motion.div>
+          ))
+        )}
       </div>
 
       <LeadPipelineOverview stats={stats} />
       
       <AiRecommendationEngine stats={stats} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Lead Pipeline Status Breakdown */}
-        <div className="lg:col-span-2 glass-card p-8 rounded-2xl shadow-2xl relative overflow-hidden group border-white/5">
+        <div className="lg:col-span-2 glass-card p-4 md:p-8 rounded-2xl shadow-2xl relative overflow-hidden group border-white/5">
           <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
              <Layers size={60} className="text-brand-indigo" />
           </div>
@@ -381,8 +392,8 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
             </div>
           </div>
           
-          <div className="space-y-8">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
+          <div className="space-y-6 md:space-y-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 md:gap-4">
               {[
                 { label: 'New Nodes', count: stats.pipeline.new, color: 'text-zinc-400 bg-white/5' },
                 { label: 'Contacted', count: stats.pipeline.contacted, color: 'text-sky-400 bg-sky-500/10 shadow-[0_0_15px_rgba(14,165,233,0.1)]' },
@@ -390,7 +401,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
                 { label: 'Converted', count: stats.pipeline.converted, color: 'text-brand-emerald bg-brand-emerald/10 shadow-[0_0_15px_rgba(16,185,129,0.1)]' },
                 { label: 'Closed Sync', count: stats.pipeline.closed, color: 'text-rose-500 bg-rose-500/10 shadow-[0_0_15px_rgba(244,63,94,0.1)]' },
               ].map((stage) => (
-                <div key={stage.label} className="p-4 md:p-5 bg-white/5 border border-white/5 rounded-2xl text-center group/stage hover:bg-white/10 transition-all cursor-crosshair">
+                <div key={`analytical-stage-${stage.label}`} className="p-4 md:p-5 bg-white/5 border border-white/5 rounded-2xl text-center group/stage hover:bg-white/10 transition-all cursor-crosshair">
                   <div className="text-xl md:text-2xl font-mono font-black text-white shadow-xl">{stage.count}</div>
                   <div className={cn("text-[8px] md:text-[9px] font-black uppercase mt-2 px-2 py-1 rounded-lg border border-transparent", stage.color)}>{stage.label}</div>
                 </div>
@@ -411,7 +422,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
               </div>
               <div className="flex justify-between mt-4 text-center px-1">
                 {['QUEUE', 'ACTIVE', 'PULSE', 'CORE', 'VAULT'].map((l, i) => (
-                  <span key={i} className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">{l}</span>
+                  <span key={`node-l-${i}`} className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">{l}</span>
                 ))}
               </div>
             </div>
@@ -452,22 +463,22 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
 
         {/* Lead Table - Live Admin Actions */}
         <div className="glass-card rounded-2xl shadow-2xl overflow-hidden flex flex-col border-white/5 lg:col-span-1">
-          <div className="p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-               <div className="w-8 h-8 bg-brand-indigo/20 rounded-lg flex items-center justify-center text-brand-indigo">
-                  <Database size={16} />
+          <div className="p-4 md:p-6 border-b border-white/5 bg-white/5 flex items-center justify-between">
+            <div className="flex items-center gap-2 md:gap-3">
+               <div className="w-7 h-7 md:w-8 md:h-8 bg-brand-indigo/20 rounded-lg flex items-center justify-center text-brand-indigo">
+                  <Database size={14} className="md:size-[16px]" />
                </div>
-               <h3 className="text-sm font-black text-white uppercase tracking-[0.1em]">Node Management</h3>
+               <h3 className="text-[12px] md:text-sm font-black text-white uppercase tracking-[0.1em]">Node Management</h3>
             </div>
             <div className="flex items-center gap-2">
-               <div className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" />
-               <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">LIVE</span>
+               <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-brand-emerald animate-pulse" />
+               <span className="text-[8px] md:text-[9px] font-black text-zinc-500 uppercase tracking-widest">LIVE</span>
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto max-h-[520px] custom-scrollbar p-2">
+          <div className="flex-1 overflow-y-auto max-h-[400px] md:max-h-[520px] custom-scrollbar p-2">
             {leads.length > 0 ? (
               leads.slice(0, 15).map((lead, i) => (
-                <div key={i} className="p-4 mb-2 bg-white/5 rounded-2xl border border-transparent hover:border-white/10 hover:bg-white/[0.08] transition-all group/lead cursor-pointer shadow-sm">
+                <div key={`admin-lead-${i}`} className="p-4 mb-2 bg-white/5 rounded-2xl border border-transparent hover:border-white/10 hover:bg-white/[0.08] transition-all group/lead cursor-pointer shadow-sm">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex flex-col">
                       <span className="text-[13px] font-bold text-white tracking-tight group-hover:text-brand-indigo transition-colors">{lead.name}</span>
@@ -527,7 +538,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
         </div>
         <div className="space-y-3">
           {activities.slice(0, 6).map((log) => (
-            <div key={log.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:border-brand-indigo/30 hover:bg-white/10 transition-all group shadow-xl">
+            <div key={`act-summary-${log.id}`} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:border-brand-indigo/30 hover:bg-white/10 transition-all group shadow-xl">
                <div className="flex items-center gap-5">
                   <div className={cn(
                     "w-10 h-10 rounded-xl shrink-0 flex items-center justify-center border transition-all",
@@ -551,7 +562,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
       </div>
 
       {/* Bottom Management Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-24">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 pb-12 md:pb-24">
         {/* Source Analytics */}
         <div className="bg-zinc-900 border border-zinc-800 p-6 rounded relative overflow-hidden group">
           <div className="flex items-center justify-between mb-6">
@@ -576,7 +587,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
               .map(([label, count]) => {
                 const percentage = Math.round((count / leads.length) * 100);
                 return (
-                  <div key={label} className="space-y-1.5">
+                  <div key={`source-stat-${label}`} className="space-y-1.5">
                     <div className="flex justify-between text-[11px] font-bold">
                       <span className="text-zinc-400 truncate pr-2">{label}</span>
                       <span className="text-zinc-200">{percentage}%</span>
@@ -595,7 +606,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
               })
             ) : (
               [...Array(4)].map((_, i) => (
-                <div key={i} className="space-y-1.5 animate-pulse">
+                <div key={`skeleton-source-${i}`} className="space-y-1.5 animate-pulse">
                   <div className="h-3 bg-zinc-800 rounded w-1/2" />
                   <div className="h-1.5 bg-zinc-800 rounded-full" />
                 </div>
@@ -616,7 +627,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
           <div className="space-y-3">
             {leads.filter(l => l.status === 'CONVERTED').length > 0 ? (
               leads.filter(l => l.status === 'CONVERTED').slice(0, 3).map((client, i) => (
-                <div key={i} className="flex items-center justify-between p-3 bg-zinc-950/50 border border-zinc-800 hover:border-brand-indigo transition-colors group/client">
+                <div key={`client-port-${i}`} className="flex items-center justify-between p-3 bg-zinc-950/50 border border-zinc-800 hover:border-brand-indigo transition-colors group/client">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded bg-brand-indigo/10 flex items-center justify-center text-brand-indigo text-xs font-bold">
                       {client.name.charAt(0)}
@@ -702,6 +713,7 @@ export default function App() {
   ]);
 
   const [isSyncing, setIsSyncing] = useState(false);
+  const isSyncingRef = useRef(false);
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
 
   const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'info' } | null>(null);
@@ -711,100 +723,9 @@ export default function App() {
     setTimeout(() => setToast(null), 5000);
   };
 
-  const [isListening, setIsListening] = useState(false);
-  const [voiceError, setVoiceError] = useState<string | null>(null);
-
-  // Voice AI Recognition Logic
-  const startVoiceAssistant = async () => {
-    try {
-      // Check for microphone permission explicitly first
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(track => track.stop()); // Just checking permission
-    } catch (err) {
-      setVoiceError("Microphone access denied. Please enable it in your browser settings.");
-      return;
-    }
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    
-    if (!SpeechRecognition) {
-      setVoiceError("Speech Recognition is not supported in this browser.");
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      setIsListening(true);
-      setVoiceError(null);
-      setActivities(prev => [{
-        id: 'voice-' + Date.now(),
-        type: 'system' as const,
-        message: '🎙 Voice AI Activated - Listening for business commands...',
-        timestamp: new Date()
-      }, ...prev].slice(0, 10));
-    };
-
-    recognition.onresult = (event: any) => {
-      const speechToText = event.results[0][0].transcript.toLowerCase();
-      handleVoiceCommand(speechToText);
-    };
-
-    recognition.onerror = (event: any) => {
-      setIsListening(false);
-      if (event.error === 'not-allowed') {
-        showToast("Microphone access denied. Please enable it.", 'error');
-        setVoiceError("Voice access required to enable AI assistant.");
-      } else if (event.error === 'no-speech') {
-        // Silent error
-      } else {
-        showToast("Voice recognition error: " + event.error, 'error');
-        setVoiceError("Error occurred in speech recognition: " + event.error);
-      }
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    recognition.start();
-  };
-
-  const handleVoiceCommand = (command: string) => {
-    setActivities(prev => [{
-      id: 'voice-cmd-' + Date.now(),
-      type: 'system' as const,
-      message: `🎙 Voice Input recognized: "${command}"`,
-      timestamp: new Date()
-    }, ...prev].slice(0, 10));
-
-    if (command.includes('show leads') || command.includes('open leads')) {
-      const el = document.getElementById('leads-table');
-      el?.scrollIntoView({ behavior: 'smooth' });
-    } else if (command.includes('open crm')) {
-      handleModeSelection('CRM AI');
-    } else if (command.includes('show hot leads')) {
-      handleModeSelection('CRM AI');
-      // Additional logic to filter? For now just switch mode as per request
-    } else if (command.includes('open marketing')) {
-      handleModeSelection('Marketing Engine');
-    } else if (command.includes('open sales')) {
-      handleModeSelection('Sales AI');
-    } else if (command.includes('show revenue')) {
-      const el = document.getElementById('stats-grid');
-      el?.scrollIntoView({ behavior: 'smooth' });
-    } else if (command.includes('client acquisition')) {
-      handleModeSelection('Client Acquisition System');
-    } else {
-      // Fallback: search in business assistant
-      handleSend(command);
-    }
-  };
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const generateId = (prefix: string = '') => `${prefix}${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
   // Live Dashboard - Real Google Sheets data polling
   useEffect(() => {
@@ -812,7 +733,8 @@ export default function App() {
     let isMounted = true;
     
     const updateDashboard = async () => {
-      if (isSyncing) return;
+      if (isSyncingRef.current) return;
+      isSyncingRef.current = true;
       setIsSyncing(true);
       
       try {
@@ -820,7 +742,6 @@ export default function App() {
         if (!isMounted) return;
 
         if (!liveLeads || liveLeads.length === 0) {
-          setIsSyncing(false);
           setLastSyncTime(new Date());
           return;
         }
@@ -881,7 +802,7 @@ export default function App() {
         if (latestLead && latestLead.name !== lastLeadName) {
           if (lastLeadName !== '') { // Only log if not first load
             setActivities(prev => [{
-              id: Date.now().toString(),
+              id: generateId('lead-'),
               type: 'lead' as const,
               message: `Live Lead Detected: ${latestLead.name} (${latestLead.service})`,
               timestamp: new Date(),
@@ -890,7 +811,7 @@ export default function App() {
           } else {
             // Log sync success on first load
             setActivities(prev => [{
-              id: 'initial-sync',
+              id: generateId('sync-'),
               type: 'system' as const,
               message: `📡 Sync Successful: ${liveLeads.length} leads retrieved from Google Sheets.`,
               timestamp: new Date()
@@ -904,14 +825,15 @@ export default function App() {
         console.error('Sync Error:', error);
         if (isMounted) {
           setActivities(prev => [{
-            id: 'error-' + Date.now(),
+            id: generateId('error-'),
             type: 'system' as const,
-            message: `⚠️ Sync Failed: Connection to Google Script interrupted.`,
+            message: `⚠️ Sync Failed: Data stream connection interrupted.`,
             timestamp: new Date()
           }, ...prev].slice(0, 10));
         }
       } finally {
         if (isMounted) {
+          isSyncingRef.current = false;
           setIsSyncing(false);
         }
       }
@@ -931,7 +853,7 @@ export default function App() {
     setLeads(prev => prev.map(l => l.name === leadName ? { ...l, status: newStatus } : l));
     
     setActivities(prev => [{
-      id: 'update-' + Date.now(),
+      id: generateId('update-'),
       type: 'crm' as const,
       message: `Manual Override: ${leadName} moved to ${newStatus}`,
       timestamp: new Date(),
@@ -1164,12 +1086,12 @@ Business analytics overview:
           }
 
           const systemMsg: Message = {
-            id: Date.now().toString(),
+            id: generateId('ai-'),
             role: 'assistant',
             content: content,
             timestamp: new Date(),
           };
-          setMessages(prev => [...prev, { id: 'cmd-' + Date.now(), role: 'user', content: textToSend, timestamp: new Date() }, systemMsg]);
+          setMessages(prev => [...prev, { id: generateId('user-cmd-'), role: 'user', content: textToSend, timestamp: new Date() }, systemMsg]);
           setInput('');
           return;
         }
@@ -1180,7 +1102,7 @@ Business analytics overview:
     }
 
     const userMsg: Message = {
-      id: Date.now().toString(),
+      id: generateId('user-'),
       role: 'user',
       content: overrideInput || input, // Use full text including command for history if needed, or stripped? Let's use what the user typed.
       timestamp: new Date(),
@@ -1194,28 +1116,36 @@ Business analytics overview:
       try {
         const response = await chatWithAssistant([...messages, userMsg], currentMode, language);
         const assistantMsg: Message = {
-          id: (Date.now() + 1).toString(),
+          id: generateId('ai-'),
           role: 'assistant',
           content: response,
           timestamp: new Date(),
         };
         setMessages(prev => [...prev, assistantMsg]);
       } catch (error: any) {
-        if (retryCount < 2 && !error.message?.includes('401') && !error.message?.includes('403')) {
-           // Auto-retry once/twice for transient issues (except auth errors)
+        if (retryCount < 1 && !error.message?.includes('Key') && !error.message?.includes('401')) {
+           // Reduced auto-retry for faster feedback, and skip for known config errors
            console.log(`Retrying... (${retryCount + 1})`);
            await new Promise(r => setTimeout(r, 2000));
            return performRequest(retryCount + 1);
         }
 
-        showToast("Strategic Connection Interrupted. Check your network.", 'error');
+        let errorContent = "### ⚠️ STRATEGIC CONNECTION INTERRUPTED\n\nI couldn't reach the BizAI Core. This is usually due to network congestion or high traffic.\n\n**OPTIONS:**\n\n1. [RETRY COMMAND](button:retry)\n2. [Switch to WhatsApp Support](https://wa.me/919330457995?text=Hi%20BizAI%20is%20down%20for%20me)\n\n*Your command history has been saved.*";
+        
+        if (error.message?.includes('missing')) {
+          errorContent = "### ⚠️ **API KEY REGISTRATION REQUIRED**\n\nThe `GEMINI_API_KEY` is not detected. Please ensure you have configured it in your project environment settings.";
+        } else if (error.message?.includes('invalid') || error.message?.includes('Key')) {
+          errorContent = "### ⚠️ **KEY AUTHENTICATION FAILED**\n\nThe provided API code was rejected by the Gemini system. Please check your credentials.";
+        }
+
         const errorMsg: Message = {
-          id: 'error-' + Date.now(),
+          id: generateId('error-'),
           role: 'assistant',
-          content: "### ⚠️ STRATEGIC CONNECTION INTERRUPTED\n\nI couldn't reach the BizAI Core. This is usually due to network congestion or high traffic.\n\n**OPTIONS:**\n\n1. [RETRY COMMAND](button:retry)\n2. [Switch to WhatsApp Support](https://wa.me/919330457995?text=Hi%20BizAI%20is%20down%20for%20me)\n\n*Your command history has been saved. You can try executing it again in a few seconds.*",
+          content: errorContent,
           timestamp: new Date(),
         };
         setMessages(prev => [...prev, errorMsg]);
+        showToast("Node Link Lost: " + (error.message || "Unknown error"), 'error');
       } finally {
         setIsLoading(false);
       }
@@ -1241,7 +1171,7 @@ Business analytics overview:
   };
 
   return (
-    <div className="flex bg-zinc-950 text-zinc-100 font-sans selection:bg-brand-indigo/10 overflow-x-hidden min-h-screen w-full relative">
+    <div className="flex bg-zinc-950 text-zinc-100 font-sans selection:bg-brand-indigo/10 overflow-hidden h-[100dvh] w-full relative">
       {/* Mobile Sidebar Overlay Backdrop */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -1263,7 +1193,7 @@ Business analytics overview:
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="w-72 md:w-80 bg-zinc-950 border-r border-zinc-800 flex flex-col z-50 fixed lg:sticky lg:top-0 lg:h-screen text-zinc-400 shadow-2xl lg:shadow-none"
+            className="w-72 md:w-80 bg-zinc-950 border-r border-zinc-800 flex flex-col z-50 fixed lg:sticky lg:top-0 lg:h-[100dvh] text-zinc-400 shadow-2xl lg:shadow-none font-sans"
           >
             <div className="p-6 md:p-8 pb-4 flex items-center justify-between border-b border-zinc-800/50 relative">
                {/* Close button for mobile sidebar */}
@@ -1294,7 +1224,7 @@ Business analytics overview:
                 <div className="space-y-1">
                   {MODES.map(({ mode, icon: Icon, color }) => (
                     <button
-                      key={mode}
+                      key={`mode-option-${mode}`}
                       onClick={() => handleModeSelection(mode)}
                       className={cn(
                         "w-full flex items-center justify-between px-4 py-3 rounded-md text-xs font-medium transition-all group relative",
@@ -1361,11 +1291,11 @@ Business analytics overview:
                       { id: 'hi', label: 'Hindi', native: 'हिन्दी', icon: '🌐' }
                     ].map((lang) => (
                       <button
-                        key={lang.id}
+                        key={`lang-opt-${lang.id}`}
                         onClick={() => {
                           setLanguage(lang.id as Language);
                           setActivities(prev => [{
-                            id: 'lang-' + Date.now(),
+                            id: generateId('lang-'),
                             type: 'system' as const,
                             message: `Language updated to ${lang.native}`,
                             timestamp: new Date()
@@ -1462,7 +1392,7 @@ Business analytics overview:
       </AnimatePresence>
 
       {/* Main Terminal View */}
-      <main className="flex-1 flex flex-col min-w-0 bg-zinc-950 relative overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 bg-zinc-950 relative overflow-hidden h-full">
         {/* Technical Header */}
         <header className="h-16 border-b border-zinc-800 flex items-center justify-between px-4 md:px-8 bg-zinc-950/80 backdrop-blur-lg z-30 shrink-0 sticky top-0 shadow-lg shadow-black/20">
           <div className="flex items-center gap-3 md:gap-4">
@@ -1531,11 +1461,11 @@ Business analytics overview:
         </AnimatePresence>
 
         {/* Console Viewport */}
-        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-8 space-y-12 bg-zinc-950 relative">
+        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-8 space-y-8 md:space-y-12 bg-zinc-950 relative custom-scrollbar overscroll-contain">
           {/* Subtle noise/gradient background */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.08),transparent_50%)] pointer-events-none" />
           
-          <div className="max-w-7xl mx-auto space-y-12 pb-48 relative z-10">
+          <div className="max-w-7xl mx-auto space-y-8 md:space-y-12 pb-32 relative z-10">
             {currentMode === 'Admin Control Center' ? (
               <AdminDashboard 
                 stats={stats} 
@@ -1623,7 +1553,7 @@ Business analytics overview:
                       status: true 
                     }
                   ].map((card, idx) => (
-                    <div key={idx} className="bg-white/5 border border-white/5 p-5 rounded-2xl hover:bg-white/10 transition-all group/card shadow-xl min-h-[120px] flex flex-col justify-center relative backdrop-blur-sm">
+                    <div key={`dashboard-card-${idx}`} className="bg-white/5 border border-white/5 p-5 rounded-2xl hover:bg-white/10 transition-all group/card shadow-xl min-h-[120px] flex flex-col justify-between relative backdrop-blur-sm h-full">
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{card.label}</span>
                         <card.icon size={14} className={card.color} />
@@ -1637,7 +1567,7 @@ Business analytics overview:
                          {card.spark && (
                            <div className="flex gap-0.5 h-4 items-end pr-1">
                               {(stats.heatmap && stats.heatmap.length > 0 ? stats.heatmap : [30, 50, 40, 70, 60, 90]).map((h, i) => (
-                                 <div key={i} className="w-0.5 bg-brand-indigo/40 rounded-full" style={{ height: `${Math.max(20, h)}%` }} />
+                                 <div key={`heatmap-bar-${i}`} className="w-0.5 bg-brand-indigo/40 rounded-full" style={{ height: `${Math.max(20, h)}%` }} />
                               ))}
                            </div>
                          )}
@@ -1676,7 +1606,7 @@ Business analytics overview:
                         </div>
                       )}
                       {activities.map((activity) => (
-                        <div key={activity.id} className="flex gap-4 text-[12px] group/item p-3 border border-transparent hover:border-white/5 hover:bg-white/5 rounded-xl transition-all">
+                        <div key={`act-full-${activity.id}`} className="flex gap-4 text-[12px] group/item p-3 border border-transparent hover:border-white/5 hover:bg-white/5 rounded-xl transition-all">
                           <div className="flex flex-col items-center gap-1.5 py-1">
                             <div className={cn(
                               "w-8 h-8 rounded-lg flex items-center justify-center shadow-lg",
@@ -1728,7 +1658,7 @@ Business analytics overview:
                                { label: 'Validated Assets', val: stats.totalLeads, color: 'bg-brand-indigo shadow-[0_0_10px_rgba(99,102,241,0.5)]' },
                                { label: 'Conversion Success', val: stats.pipeline.converted, color: 'bg-brand-emerald shadow-[0_0_10px_rgba(16,185,129,0.5)]' }
                              ].map((step, idx) => (
-                              <div key={idx} className="group/funnel">
+                              <div key={`funnel-step-${idx}`} className="group/funnel">
                                  <div className="flex justify-between text-[9px] font-black text-zinc-500 uppercase mb-2 tracking-widest">
                                     <span>{step.label}</span>
                                     <span className="text-white font-mono">{step.val.toLocaleString()}</span>
@@ -1759,7 +1689,7 @@ Business analytics overview:
                             { color: 'bg-brand-emerald', percentage: (stats.pipeline.converted / (stats.totalLeads || 1)) * 100 },
                             { color: 'bg-rose-500/50', percentage: (stats.pipeline.closed / (stats.totalLeads || 1)) * 100 }
                           ].map((seg, i) => (
-                             <div key={i} className={cn("h-full rounded-full shadow-lg", seg.color)} style={{ width: `${Math.max(5, seg.percentage)}%` }} />
+                             <div key={`flow-seg-${i}`} className={cn("h-full rounded-full shadow-lg", seg.color)} style={{ width: `${Math.max(5, seg.percentage)}%` }} />
                           ))}
                        </div>
                     </div>
@@ -1801,7 +1731,7 @@ Business analytics overview:
                     <tbody>
                       {isSyncing && leads.length === 0 ? (
                         [...Array(5)].map((_, i) => (
-                          <tr key={i} className="animate-pulse">
+                          <tr key={`table-skeleton-${i}`} className="animate-pulse">
                             <td className="px-6 py-6 bg-white/5 rounded-l-2xl border-t border-b border-l border-white/5"><div className="h-5 bg-zinc-800 rounded w-36 mb-2" /><div className="h-3 bg-zinc-800 rounded w-24" /></td>
                             <td className="px-6 py-6 bg-white/5 border-t border-b border-white/5 hidden sm:table-cell"><div className="h-4 bg-zinc-800 rounded w-28" /></td>
                             <td className="px-6 py-6 bg-white/5 border-t border-b border-white/5 hidden md:table-cell"><div className="h-4 bg-zinc-800 rounded w-20" /></td>
@@ -1811,7 +1741,7 @@ Business analytics overview:
                         ))
                       ) : leads.length > 0 ? (
                         leads.slice(0, 10).map((lead, i) => (
-                          <tr key={i} className="group hover:translate-y-[-2px] transition-all duration-300">
+                          <tr key={`lead-row-${i}`} className="group hover:translate-y-[-2px] transition-all duration-300">
                             <td className="px-6 py-6 bg-white/5 group-hover:bg-white/[0.08] lg:group-hover:bg-white/[0.1] rounded-l-2xl border-l border-t border-b border-white/5 shadow-sm transition-all">
                               <div className="flex flex-col">
                                 <span className="text-zinc-100 font-bold text-base tracking-tight group-hover:text-brand-indigo transition-colors">{lead.name}</span>
@@ -1864,20 +1794,20 @@ Business analytics overview:
                 key={currentMode + "-banner"}
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8"
+                className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mt-6 md:mt-8"
               >
-                <div className="bg-white/5 border border-white/5 p-6 rounded-2xl flex flex-col shadow-xl backdrop-blur-md">
-                  <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-2">Strategy Node</span>
-                  <h3 className="text-xl font-bold text-white tracking-tight">{MODE_INSIGHTS[currentMode].title}</h3>
-                  <p className="text-[12px] text-zinc-400 mt-3 leading-relaxed font-medium">{MODE_INSIGHTS[currentMode].hint}</p>
+                <div className="bg-white/5 border border-white/5 p-4 md:p-6 rounded-2xl flex flex-col shadow-xl backdrop-blur-md">
+                  <span className="text-[9px] md:text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-2">Strategy Node</span>
+                  <h3 className="text-lg md:text-xl font-bold text-white tracking-tight">{MODE_INSIGHTS[currentMode].title}</h3>
+                  <p className="text-[11px] md:text-[12px] text-zinc-400 mt-2 md:mt-3 leading-relaxed font-medium">{MODE_INSIGHTS[currentMode].hint}</p>
                 </div>
-                <div className="bg-white/5 border border-white/5 p-6 md:col-span-2 rounded-2xl shadow-xl backdrop-blur-md">
-                  <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-4 block">Operational Matrix Focus</span>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {MODE_INSIGHTS[currentMode].tips.map(tip => (
-                      <div key={tip} className="flex items-center gap-3 group bg-white/5 p-3 rounded-xl border border-white/5 hover:border-brand-indigo/30 transition-all">
-                        <div className="w-2 h-2 rounded-full bg-brand-indigo shadow-[0_0_8px_rgba(99,102,241,0.5)] group-hover:scale-125 transition-transform" />
-                        <span className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">{tip}</span>
+                <div className="bg-white/5 border border-white/5 p-4 md:p-6 md:col-span-2 rounded-2xl shadow-xl backdrop-blur-md">
+                  <span className="text-[9px] md:text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-3 md:mb-4 block">Operational Matrix Focus</span>
+                  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-2 md:gap-4">
+                    {MODE_INSIGHTS[currentMode].tips.map((tip, tipIdx) => (
+                      <div key={`insight-tip-${tipIdx}`} className="flex items-center gap-2 md:gap-3 group bg-white/5 p-2 md:p-3 rounded-xl border border-white/5 hover:border-brand-indigo/30 transition-all">
+                        <div className="w-1.5 h-1.5 rounded-full bg-brand-indigo shadow-[0_0_8px_rgba(99,102,241,0.5)] group-hover:scale-125 transition-transform" />
+                        <span className="text-[9px] md:text-[10px] font-black text-zinc-300 uppercase tracking-widest">{tip}</span>
                       </div>
                     ))}
                   </div>
@@ -1887,25 +1817,25 @@ Business analytics overview:
 
             {messages.map((msg) => (
               <motion.div
-                key={msg.id}
+                key={`chat-msg-${msg.id}`}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 className={cn(
-                  "flex gap-6",
+                  "flex gap-3 md:gap-6",
                   msg.role === 'user' ? "flex-row-reverse" : "flex-row"
                 )}
               >
                 <div className={cn(
-                  "w-12 h-12 shrink-0 flex items-center justify-center rounded-2xl border transition-all duration-300",
+                  "w-10 h-10 md:w-12 md:h-12 shrink-0 flex items-center justify-center rounded-2xl border transition-all duration-300",
                   msg.role === 'assistant' 
                     ? "bg-brand-indigo/10 border-brand-indigo/30 text-brand-indigo shadow-[0_0_15px_rgba(99,102,241,0.15)]" 
                     : "bg-white/5 border-white/10 text-zinc-400 shadow-xl"
                 )}>
-                  {msg.role === 'assistant' ? <Bot size={24} className="animate-pulse" /> : <User size={24} />}
+                  {msg.role === 'assistant' ? <Bot size={20} className="md:size-6 animate-pulse" /> : <User size={20} className="md:size-6" />}
                 </div>
                 
                 <div className={cn(
-                  "max-w-[85%] md:max-w-[75%] space-y-2",
+                  "flex-1 max-w-[calc(100%-3rem)] md:max-w-[85%] lg:max-w-[75%] space-y-2 flex flex-col",
                   msg.role === 'user' ? "items-end" : "items-start"
                 )}>
                   <div className={cn(
@@ -1920,36 +1850,36 @@ Business analytics overview:
                     </span>
                   </div>
                   <div className={cn(
-                    "p-6 rounded-sm text-[14px] leading-relaxed",
+                    "p-4 md:p-6 rounded-2xl text-[14px] leading-relaxed break-words overflow-hidden w-full",
                     msg.role === 'assistant' 
-                      ? "bg-white border border-zinc-200 text-zinc-800 shadow-sm prose prose-sm prose-zinc max-w-none prose-p:leading-relaxed prose-strong:text-brand-indigo prose-strong:font-bold" 
-                      : "bg-zinc-950 text-white border-zinc-800 font-medium"
+                      ? "bg-zinc-950/50 border border-zinc-800 text-zinc-100 shadow-xl prose prose-sm prose-invert max-w-none prose-p:leading-relaxed prose-strong:text-brand-indigo prose-strong:font-bold prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/10" 
+                      : "bg-brand-indigo/10 text-white border border-brand-indigo/30 font-medium"
                   )}>
                     {msg.role === 'assistant' ? (
-                      <div>
+                      <div className="w-full">
                         <Markdown
                           remarkPlugins={[remarkGfm]}
                           components={{
                             ul: ({ children }) => <ul className="list-disc pl-4 space-y-1 my-3">{children}</ul>,
                             ol: ({ children }) => <ol className="list-decimal pl-4 space-y-1 my-3">{children}</ol>,
-                            li: ({ children }) => <li className="text-zinc-600">{children}</li>,
-                            h1: ({ children }) => <h1 className="text-lg font-serif italic font-bold text-zinc-900 mt-6 mb-3 border-b border-zinc-100 pb-1">{children}</h1>,
-                            h2: ({ children }) => <h2 className="text-base font-serif italic font-bold text-zinc-900 mt-6 mb-3">{children}</h2>,
-                            h3: ({ children }) => <h3 className="text-sm font-bold text-zinc-800 mt-4 mb-2 uppercase tracking-tight">{children}</h3>,
-                            p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                            li: ({ children }) => <li className="text-zinc-300">{children}</li>,
+                            h1: ({ children }) => <h1 className="text-lg font-serif italic font-bold text-white mt-6 mb-3 border-b border-white/10 pb-1">{children}</h1>,
+                            h2: ({ children }) => <h2 className="text-base font-serif italic font-bold text-white mt-6 mb-3">{children}</h2>,
+                            h3: ({ children }) => <h3 className="text-sm font-bold text-zinc-200 mt-4 mb-2 uppercase tracking-tight">{children}</h3>,
+                            p: ({ children }) => <p className="mb-3 last:mb-0 break-words-container">{children}</p>,
                             a: ({ children, href }) => (
                               <a 
                                 href={href} 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
-                                className="text-brand-indigo hover:underline font-bold"
+                                className="text-brand-indigo hover:underline font-bold break-all inline-block max-w-full"
                               >
                                 {children}
                               </a>
                             ),
                             strong: ({ children }) => <strong className="font-bold text-brand-indigo">{children}</strong>,
                             blockquote: ({ children }) => (
-                              <blockquote className="border-l-2 border-brand-indigo/30 pl-4 py-1 italic text-zinc-500 my-4 bg-zinc-50/50">
+                              <blockquote className="border-l-2 border-brand-indigo/30 pl-4 py-1 italic text-zinc-400 my-4 bg-white/5">
                                 {children}
                               </blockquote>
                             )
@@ -1961,7 +1891,7 @@ Business analytics overview:
                         {msg.content.includes('button:retry') && (
                           <button 
                             onClick={handleRetry}
-                            className="mt-6 bg-brand-indigo text-white px-8 py-3 rounded-none font-bold flex items-center gap-2 hover:bg-brand-indigo/80 transition-all shadow-[0_0_20px_rgba(99,102,241,0.2)] active:scale-95 border-b-2 border-brand-indigo/50 font-mono uppercase tracking-widest text-[10px]"
+                            className="mt-6 bg-brand-indigo text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-brand-indigo/80 transition-all shadow-[0_0_20px_rgba(99,102,241,0.2)] active:scale-95 border border-brand-indigo/50 font-mono uppercase tracking-widest text-[10px]"
                           >
                             <RefreshCcw size={14} />
                             Retry Command Execution
@@ -1980,9 +1910,9 @@ Business analytics overview:
                               { label: "Marketing AI Agent", cmd: "/marketing", icon: TrendingUp },
                               { label: "Growth AI Agent", cmd: "/growth", icon: Briefcase },
                               { label: "Scale Fast", cmd: "/scaling", icon: Target },
-                            ].map((action) => (
+                            ].map((action, actionIdx) => (
                               <button
-                                key={action.label}
+                                key={`welcome-action-${actionIdx}`}
                                 onClick={() => {
                                   if ('isExternal' in action && action.isExternal) {
                                     window.open(action.cmd, '_blank');
@@ -1990,17 +1920,17 @@ Business analytics overview:
                                     handleSend(action.cmd);
                                   }
                                 }}
-                                className="flex items-center gap-3 p-3 bg-zinc-50 border border-zinc-200 hover:border-brand-indigo hover:bg-brand-indigo/5 transition-all text-left group"
+                                className="flex items-center gap-3 p-3 bg-zinc-900 border border-zinc-800 hover:border-brand-indigo hover:bg-brand-indigo/5 transition-all text-left group rounded-xl"
                               >
-                                <action.icon size={14} className="text-zinc-400 group-hover:text-brand-indigo" />
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 group-hover:text-brand-indigo leading-tight">{action.label}</span>
+                                <action.icon size={14} className="text-zinc-500 group-hover:text-brand-indigo" />
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 group-hover:text-brand-indigo leading-tight">{action.label}</span>
                               </button>
                             ))}
                           </div>
                         )}
                       </div>
                     ) : (
-                      msg.content
+                      <div className="break-words w-full">{msg.content}</div>
                     )}
                   </div>
                 </div>
@@ -2011,18 +1941,18 @@ Business analytics overview:
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="flex gap-6 items-center"
+                    className="flex gap-3 md:gap-6 items-center"
                   >
-                    <div className="w-10 h-10 bg-zinc-950 border border-zinc-800 text-brand-indigo flex items-center justify-center animate-pulse">
+                    <div className="w-10 h-10 bg-zinc-950 border border-zinc-800 text-brand-indigo flex items-center justify-center animate-pulse rounded-2xl">
                       <Bot size={20} />
                     </div>
-                    <div className="flex gap-2 p-3 bg-white border border-zinc-200 px-4 items-center">
+                    <div className="flex gap-2 p-3 bg-zinc-900/50 border border-zinc-800 px-4 items-center rounded-2xl">
                       <div className="flex gap-1.5">
-                        <div className="w-1.5 h-1.5 bg-brand-indigo animate-bounce [animation-delay:-0.32s]" />
-                        <div className="w-1.5 h-1.5 bg-brand-indigo animate-bounce [animation-delay:-0.16s]" />
-                        <div className="w-1.5 h-1.5 bg-brand-indigo animate-bounce" />
+                        <div className="w-1.5 h-1.5 bg-brand-indigo animate-bounce [animation-delay:-0.32s] rounded-full" />
+                        <div className="w-1.5 h-1.5 bg-brand-indigo animate-bounce [animation-delay:-0.16s] rounded-full" />
+                        <div className="w-1.5 h-1.5 bg-brand-indigo animate-bounce rounded-full" />
                       </div>
-                      <span className="text-[10px] font-mono text-zinc-400 ml-4 uppercase tracking-[0.2em] animate-pulse">BizAI.LOG: Processing</span>
+                      <span className="text-[10px] font-mono text-zinc-500 ml-4 uppercase tracking-[0.2em] animate-pulse">BizAI.LOG: Processing</span>
                     </div>
                   </motion.div>
                 )}
@@ -2039,13 +1969,13 @@ Business analytics overview:
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 100, opacity: 0 }}
-              className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 md:p-8 pt-0 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent z-40"
+              className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 pt-0 bg-gradient-to-t from-zinc-950 via-zinc-950/90 to-transparent z-40"
             >
               <div className="max-w-4xl mx-auto">
                 <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-brand-indigo/20 to-brand-emerald/20 blur opacity-0 group-focus-within:opacity-100 transition-opacity rounded-sm" />
-                  <div className="relative flex shadow-2xl shadow-indigo-500/10 border border-white/10 overflow-hidden bg-[#111827] items-end border-b-0 sm:border-b rounded-xl command-input-wrapper">
-                    <div className="hidden sm:flex items-center px-4 h-12 md:h-14 bg-black/30 border-r border-white/5 text-[10px] font-mono text-brand-indigo font-bold uppercase tracking-widest">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-brand-indigo/20 to-brand-emerald/20 blur opacity-0 group-focus-within:opacity-100 transition-opacity rounded-2xl" />
+                  <div className="relative flex shadow-2xl shadow-indigo-500/10 border border-white/10 overflow-hidden bg-[#0a0a0a] items-end rounded-2xl command-input-wrapper">
+                    <div className="hidden sm:flex items-center px-4 h-12 md:h-14 bg-white/5 border-r border-white/10 text-[10px] font-mono text-brand-indigo font-bold uppercase tracking-widest">
                       CMD {'>'}
                     </div>
                     <textarea
@@ -2060,26 +1990,26 @@ Business analytics overview:
                       rows={Math.min(5, input.split('\n').length || 1)}
                       placeholder={isLoading ? "SYSTEM PROCESSING..." : "EXECUTE COMMAND..."}
                       disabled={isLoading}
-                      className="chat-input flex-1 bg-transparent py-3 md:py-4 px-4 md:px-6 text-[15px] font-medium focus:outline-none placeholder:text-zinc-500 uppercase tracking-tight resize-none max-h-40 border-none !p-3 !border-0 !rounded-none"
+                      className="chat-input flex-1 bg-transparent py-3 md:py-4 px-4 md:px-6 text-[14px] md:text-[15px] font-medium focus:outline-none placeholder:text-zinc-600 uppercase tracking-tight resize-none max-h-40 border-none !p-4 !border-0 !rounded-none min-h-[56px]"
                     />
                     <button
                       onClick={() => handleSend()}
                       disabled={!input.trim() || isLoading}
                       className={cn(
-                        "px-4 sm:px-8 h-12 md:h-14 transition-all flex items-center justify-center border-l border-white/5",
+                        "px-6 sm:px-8 h-12 md:h-14 transition-all flex items-center justify-center border-l border-white/10",
                         input.trim() && !isLoading 
                           ? "bg-brand-indigo text-white hover:bg-brand-indigo/80 shadow-[0_0_15px_rgba(99,102,241,0.3)]" 
-                          : "bg-white/5 text-zinc-600 cursor-not-allowed"
+                          : "bg-white/5 text-zinc-700 cursor-not-allowed"
                       )}
                     >
-                      <Send size={16} />
+                      <Send size={18} />
                     </button>
                   </div>
                 </div>
-                <div className="mt-2 md:mt-4 flex flex-col sm:flex-row justify-between items-center px-2 gap-2">
-                  <span className="text-[7px] md:text-[8px] font-mono text-zinc-400 uppercase tracking-[0.2em] md:tracking-[0.3em]">SECURE.ENCRYPTED.NODE</span>
+                <div className="mt-3 md:mt-4 flex flex-col sm:flex-row justify-between items-center px-2 gap-2">
+                  <span className="text-[7px] md:text-[8px] font-mono text-zinc-500 uppercase tracking-[0.2em] md:tracking-[0.3em]">SECURE.ENCRYPTED.NODE</span>
                   <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-[7px] md:text-[8px] font-mono text-zinc-400 uppercase">Ver: 3.2.0-STABLE</span>
+                    <span className="text-[7px] md:text-[8px] font-mono text-zinc-500 uppercase">Ver: 3.2.0-STABLE</span>
                     <div className="flex items-center gap-1.5">
                       <span className={cn("w-1 h-1 rounded-full", isLoading ? "bg-brand-indigo animate-pulse" : "bg-brand-emerald")} />
                       <span className={cn("text-[7px] md:text-[8px] font-mono uppercase tracking-tighter", isLoading ? "text-brand-indigo" : "text-brand-emerald")}>
@@ -2093,83 +2023,6 @@ Business analytics overview:
           )}
         </AnimatePresence>
 
-        {/* Voice AI Assistant - Floating Module */}
-        <div className="fixed bottom-24 sm:bottom-32 right-4 sm:right-6 z-50 flex flex-col items-end gap-3 pointer-events-none">
-          <AnimatePresence>
-            {voiceError && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="bg-rose-500 text-white text-[9px] md:text-[10px] font-bold px-3 py-2 rounded shadow-xl pointer-events-auto"
-              >
-                {voiceError}
-              </motion.div>
-            )}
-            
-            {isListening && (
-              <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="bg-zinc-950 border border-brand-indigo/50 p-3 md:p-4 rounded shadow-2xl flex items-center gap-3 md:gap-4 pointer-events-auto max-w-[200px] sm:max-w-none"
-              >
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 1, 2].map((i, idx) => (
-                    <motion.div 
-                      key={idx}
-                      animate={{ height: [4, 12, 6, 16, 4] }}
-                      transition={{ 
-                        repeat: Infinity, 
-                        duration: 0.8, 
-                        delay: idx * 0.1,
-                      }}
-                      className="w-1 bg-brand-indigo rounded-full"
-                    />
-                  ))}
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold text-white uppercase tracking-widest block leading-none">Voice AI Active</span>
-                  <span className="text-[8px] text-brand-indigo font-mono animate-pulse uppercase mt-1">Listening for commands...</span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="pointer-events-auto group relative">
-            <motion.button 
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={startVoiceAssistant}
-              className={cn(
-                "w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 group relative overflow-hidden",
-                isListening 
-                  ? "bg-brand-indigo ring-4 ring-brand-indigo/20" 
-                  : "bg-zinc-950 border border-zinc-800 hover:border-brand-indigo/50"
-              )}
-            >
-              {isListening ? (
-                <Volume2 size={24} className="text-white animate-pulse" />
-              ) : (
-                <Mic size={24} className={cn("transition-colors", isListening ? "text-white" : "text-brand-indigo group-hover:text-white")} />
-              )}
-              
-              {/* Animated Ring */}
-              <div className={cn(
-                "absolute inset-0 border-2 border-brand-indigo/40 rounded-full",
-                isListening ? "animate-ping" : "opacity-0 group-hover:opacity-100 transition-opacity"
-              )} />
-              
-              {/* Premium Glow */}
-              <div className="absolute inset-0 bg-brand-indigo/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity" />
-            </motion.button>
-            
-            {/* Tooltip */}
-            <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-xl">
-               <span className="text-[9px] font-bold text-white uppercase tracking-widest">Business Voice Assistant</span>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );
