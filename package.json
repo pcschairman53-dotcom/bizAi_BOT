@@ -8,8 +8,6 @@
     "start": "tsx server.ts",
     "build": "vite build",
     "preview": "vite preview",
-    "postinstall":"npm install rollup @rollup/rollup-linux-x64-gnu",
-   
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },
