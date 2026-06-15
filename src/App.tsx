@@ -299,6 +299,156 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
   );
 }
 
+function BusinessOperationsCenter({ stats }: { stats: DashboardStats }) {
+  const overviewMetrics = [
+    { label: 'Active Clients', val: stats.pipeline?.converted || 12, icon: CheckCircle2, color: 'text-brand-emerald', bg: 'bg-emerald-500/10' },
+    { label: 'Pending Follow-ups', val: stats.pipeline?.followup || 8, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { label: 'Revenue Opportunities', val: stats.revenueEstimate ? `₹${stats.revenueEstimate.toLocaleString()}` : '₹3,50,000', icon: DollarSign, color: 'text-brand-indigo', bg: 'bg-indigo-500/10' },
+  ];
+
+  const quickActions = [
+    { 
+      label: 'Generate Proposal', 
+      desc: 'Create conversion layouts', 
+      icon: Briefcase, 
+      url: 'https://wa.me/919330457995?text=Hi%20BizAI,%20I%20want%20to%20generate%20a%20business%20proposal' 
+    },
+    { 
+      label: 'Website Audit', 
+      desc: 'Detect performance leaks', 
+      icon: Layers, 
+      url: 'https://docs.google.com/forms/d/e/1FAIpQLSd8uRsyJVbqqPmR1u3AEvQLj6QXn7klQ9KYTHMTGI2-t9N9Hw/viewform?usp=header' 
+    },
+    { 
+      label: 'WhatsApp Follow-up', 
+      desc: 'Activate pipeline push', 
+      icon: MessageSquare, 
+      url: 'https://wa.me/919330457995?text=Hi%20BizAI,%20I%20want%20to%20activate%20my%20WhatsApp%20follow-up%20strategy' 
+    }
+  ];
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="glass-card neon-glow-indigo p-5 md:p-8 rounded-2xl relative overflow-hidden group/ops mt-6 border-white/5"
+      id="business-operations-center"
+    >
+      <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover/ops:opacity-[0.05] transition-opacity pointer-events-none">
+        <Briefcase size={120} className="text-brand-indigo" />
+      </div>
+
+      <div className="relative z-10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+          <div>
+            <h3 className="text-white text-lg font-bold tracking-tight flex items-center gap-3">
+              <div className="w-8 h-8 bg-brand-indigo/20 rounded-lg flex items-center justify-center">
+                <Briefcase size={18} className="text-brand-indigo" />
+              </div>
+              Business Operations Center
+            </h3>
+            <p className="text-[11px] text-zinc-500 mt-1 uppercase font-bold tracking-[0.2em]">Operational Efficiency Command</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="px-4 py-1.5 bg-zinc-900/50 border border-white/10 rounded-full text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-brand-indigo rounded-full animate-pulse" />
+              Operations Panel Active
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Module 1: Business Overview */}
+          <div className="p-5 bg-white/5 border border-white/5 rounded-xl shadow-xl backdrop-blur-sm flex flex-col justify-between">
+            <div>
+              <h4 className="text-[10px] font-bold text-white uppercase tracking-[0.25em] mb-4 flex items-center gap-2">
+                <Activity size={14} className="text-brand-indigo animate-pulse" />
+                Business Overview
+              </h4>
+              <div className="space-y-4">
+                {overviewMetrics.map((step, idx) => (
+                  <div key={`overview-m-${idx}`} className="flex items-center justify-between p-3 bg-zinc-950/20 rounded-xl border border-white/5">
+                    <div className="flex items-center gap-3">
+                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", step.bg, step.color)}>
+                        <step.icon size={14} />
+                      </div>
+                      <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{step.label}</span>
+                    </div>
+                    <span className="text-sm font-mono font-bold text-white">{step.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Module 2: Quick Actions */}
+          <div className="p-5 bg-white/5 border border-white/5 rounded-xl shadow-xl backdrop-blur-sm flex flex-col justify-between">
+            <div>
+              <h4 className="text-[10px] font-bold text-white uppercase tracking-[0.25em] mb-4 flex items-center gap-2">
+                <Cpu size={14} className="text-brand-indigo" />
+                Quick Actions
+              </h4>
+              <div className="grid grid-cols-1 gap-2.5">
+                {quickActions.map((act, idx) => {
+                  const Icon = act.icon;
+                  return (
+                    <button
+                      key={`ops-act-${idx}`}
+                      onClick={() => window.open(act.url, '_blank')}
+                      className="w-full flex items-center justify-between p-3 bg-white/[0.02] border border-white/5 hover:border-brand-indigo/30 hover:bg-white/[0.06] transition-all rounded-xl text-left group/btn cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-white/5 rounded-lg text-zinc-400 group-hover/btn:text-white transition-colors">
+                          <Icon size={14} />
+                        </div>
+                        <div>
+                          <span className="text-[11px] font-bold text-white uppercase tracking-wider block">{act.label}</span>
+                          <span className="text-[9px] text-zinc-500 font-bold block">{act.desc}</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={14} className="text-zinc-500 group-hover/btn:text-white transition-transform group-hover/btn:translate-x-0.5" />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Module 3: Consultation CTA */}
+          <div className="p-5 bg-gradient-to-br from-brand-indigo/10 via-transparent to-brand-indigo/5 border border-white/5 rounded-xl shadow-xl flex flex-col justify-between relative overflow-hidden group/cta">
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-indigo/5 via-transparent to-transparent opacity-50 pointer-events-none" />
+            <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+              <div>
+                <h4 className="text-[11px] font-bold text-white uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                  <Sparkles size={14} className="text-brand-indigo animate-pulse" />
+                  Scale Priority
+                </h4>
+                <p className="text-[11px] text-zinc-400 leading-relaxed font-medium mt-3">
+                  Deploy premium operational acceleration systems. Upgrade customized enterprise pipeline nodes in collaboration with our master growth consultants.
+                </p>
+              </div>
+
+              <motion.button
+                whileHover={{ 
+                  scale: 1.02,
+                  boxShadow: "0 0 25px rgba(99, 102, 241, 0.4)"
+                }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => window.open('https://wa.me/919330457995?text=Hi%20PCS%20Consultancy,%20I%20want%20to%20upgrade%20my%20AI%20automation%20system', '_blank')}
+                className="w-full py-3 bg-brand-indigo text-white hover:bg-indigo-600 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(99,102,241,0.2)] flex items-center justify-center gap-2 cursor-pointer focus:outline-none"
+              >
+                <Phone size={14} />
+                <span>Book Premium Consultation</span>
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 const Skeleton = ({ className }: { className?: string }) => (
   <div className={cn("animate-pulse bg-white/5 rounded-xl", className)} />
 );
@@ -372,6 +522,8 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
       </div>
 
       <LeadPipelineOverview stats={stats} />
+      
+      <BusinessOperationsCenter stats={stats} />
       
       <AiRecommendationEngine stats={stats} />
 
@@ -656,6 +808,45 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
     </div>
   );
 }
+
+const preprocessMessageContent = (content: string): string => {
+  if (!content) return '';
+  
+  let formatted = content.replace('[RETRY COMMAND](button:retry)', '');
+
+  // Clean URL for BizAI onboarding form
+  const onboardingFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSd8uRsyJVbqqPmR1u3AEvQLj6QXn7klQ9KYTHMTGI2-t9N9Hw/viewform?usp=header";
+
+  // Non-lookbehind safe regex to match both markdown links and raw URLs
+  const linkRegex = /\[([^\]]+)\]\((https:\/\/[^\s\)]+)\)|(https:\/\/docs\.google\.com\/forms\/[^\s\)]+)|(https:\/\/wa\.me\/[^\s\)]+)/gi;
+
+  formatted = formatted.replace(linkRegex, (match, p1, p2, p3, p4) => {
+    if (p1 && p2) {
+      if (p2.includes('docs.google.com/forms') || p2.includes('google.com/forms')) {
+        return `[📝 Fill Onboarding Form](${onboardingFormUrl})`;
+      }
+      if (p2.includes('wa.me')) {
+        if (p2.includes('Google%20Sheets') || p2.includes('Google Sheets')) {
+          return `[📊 Activate Analytics](${p2})`;
+        }
+        return `[📲 Connect on WhatsApp](${p2})`;
+      }
+      return match;
+    }
+    if (p3) {
+      return `[📝 Fill Onboarding Form](${onboardingFormUrl})`;
+    }
+    if (p4) {
+      if (p4.includes('Google%20Sheets') || p4.includes('Google Sheets')) {
+        return `[📊 Activate Analytics](${p4})`;
+      }
+      return `[📲 Connect on WhatsApp](${p4})`;
+    }
+    return match;
+  });
+
+  return formatted;
+};
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([
@@ -1482,7 +1673,7 @@ Business analytics overview:
             <motion.div 
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="glass-card neon-glow-indigo p-5 md:p-10 rounded-2xl relative overflow-hidden group"
+              className="glass-card neon-glow-indigo p-4 md:p-8 rounded-2xl relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                 <LayoutDashboard size={120} className="text-brand-indigo" />
@@ -1496,15 +1687,20 @@ Business analytics overview:
                     <div>
                       <h2 className="text-white text-xl font-bold tracking-tight">Enterprise Insight Matrix</h2>
                       <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold mt-1">
-                        {isSyncing ? "Establishing Secure Connection..." : `Operational Node Sync: ${lastSyncTime ? lastSyncTime.toLocaleTimeString() : 'Active'}`}
+                        {isSyncing ? (
+                          <>
+                            <span className="text-brand-emerald block">BUSINESS ANALYTICS READY</span>
+                            <span className="text-[8px] text-zinc-500 block mt-0.5 tracking-[0.15em]">WAITING FOR DATA INPUT</span>
+                          </>
+                        ) : `Operational Node Sync: ${lastSyncTime ? lastSyncTime.toLocaleTimeString() : 'Active'}`}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 text-white w-full md:w-auto">
                      <div className="flex items-center gap-3 bg-zinc-900/50 border border-white/10 px-4 py-2 rounded-xl backdrop-blur-md shadow-lg flex-1 md:flex-none justify-center">
-                        <div className={cn("w-2.5 h-2.5 rounded-full", isSyncing ? "bg-brand-indigo animate-spin" : "bg-brand-emerald animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]")} />
-                        <span className="text-[11px] font-bold uppercase tracking-widest">
-                          {isSyncing ? "Synchronizing" : "System Core Live"}
+                        <div className="w-2.5 h-2.5 rounded-full bg-brand-emerald animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-[#10b981]">
+                           System Core Live
                         </span>
                      </div>
                   </div>
@@ -1512,10 +1708,11 @@ Business analytics overview:
 
                 <div id="stats-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 relative">
                   {isSyncing && stats.totalLeads === 0 && (
-                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl">
-                       <div className="text-center">
-                          <div className="w-10 h-10 border-2 border-brand-indigo border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                          <span className="text-[12px] font-bold text-white uppercase tracking-[0.2em] block">Decrypting Cloud Streams...</span>
+                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/65 backdrop-blur-sm rounded-2xl border border-white/10 shadow-2xl">
+                       <div className="text-center p-6">
+                          <span className="text-[12px] font-black text-brand-emerald uppercase tracking-[0.25em] block mb-2">SYSTEM READY</span>
+                          <span className="text-[11px] font-bold text-zinc-300 uppercase tracking-[0.15em] block mb-1">Awaiting Lead Data</span>
+                          <span className="text-[9px] font-medium text-zinc-500 uppercase tracking-widest block">Google Form Integration Available</span>
                        </div>
                     </div>
                   )}
@@ -1698,6 +1895,204 @@ Business analytics overview:
               </div>
             </motion.div>
 
+            {/* Business Growth Center */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="glass-card neon-glow-emerald p-5 md:p-10 rounded-2xl relative overflow-hidden group/growth mt-8"
+              id="business-growth-center"
+            >
+              {/* Decorative Background Icon */}
+              <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover/growth:opacity-[0.07] transition-opacity pointer-events-none">
+                <TrendingUp size={120} className="text-brand-emerald" />
+              </div>
+
+              <div className="relative z-10">
+                {/* Section Header */}
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-brand-emerald/20 rounded-2xl flex items-center justify-center text-brand-emerald shadow-lg">
+                      <TrendingUp size={24} className="animate-pulse" />
+                    </div>
+                    <div>
+                      <h2 className="text-white text-xl font-bold tracking-tight">Business Growth Center</h2>
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold mt-1">
+                        Strategic Acceleration & Analytics Engine
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 text-white w-full md:w-auto">
+                    <div className="flex items-center gap-3 bg-zinc-900/50 border border-white/10 px-4 py-2 rounded-xl backdrop-blur-md shadow-lg flex-1 md:flex-none justify-center">
+                      <div className="w-2.5 h-2.5 rounded-full bg-brand-emerald animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                      <span className="text-[11px] font-bold uppercase tracking-widest text-[#10b981]">
+                        Optimization Node Enabled
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Grid Layout for modules */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  
+                  {/* Column 1: Growth Score Card */}
+                  <div className="bg-white/5 border border-white/5 p-6 rounded-2xl shadow-xl backdrop-blur-sm flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-[11px] font-bold text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
+                        <Activity size={16} className="text-brand-emerald" />
+                        GROWTH SCORE TARGETS
+                      </h3>
+                      
+                      {/* Overall Circular Score or Large text presentation */}
+                      <div className="flex items-center gap-6 mb-6">
+                        <div className="relative flex items-center justify-center w-20 h-20 rounded-full border-4 border-brand-emerald/20">
+                          <div className="absolute inset-0 rounded-full border-4 border-t-brand-emerald border-r-brand-emerald border-b-transparent border-l-transparent animate-spin-slow" />
+                          <div className="text-center">
+                            <span className="text-2xl font-black text-white font-mono">72</span>
+                            <span className="text-[10px] text-zinc-500 font-bold block -mt-1">/ 100</span>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-white">Business Growth Score</h4>
+                          <p className="text-[10px] text-zinc-400 mt-0.5 leading-relaxed">
+                            Above market average index. Key acceleration vectors identified.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Score Metrics */}
+                      <div className="space-y-4">
+                        {[
+                          { label: 'Lead Generation', val: 72, color: 'bg-brand-indigo' },
+                          { label: 'Website Presence', val: 85, color: 'bg-brand-emerald' },
+                          { label: 'Automation Velocity', val: 60, color: 'bg-amber-400' }
+                        ].map((m, idx) => (
+                          <div key={`score-val-${idx}`}>
+                            <div className="flex justify-between text-[10px] font-bold text-zinc-400 uppercase mb-1.5 tracking-wider">
+                              <span>{m.label}</span>
+                              <span className="text-white font-mono">{m.val}%</span>
+                            </div>
+                            <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                              <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${m.val}%` }}
+                                transition={{ duration: 1, delay: 0.1 * idx }}
+                                className={cn("h-full rounded-full", m.color)}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Column 2: Quick Actions */}
+                  <div className="bg-white/5 border border-white/5 p-6 rounded-2xl shadow-xl backdrop-blur-sm flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-[11px] font-bold text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
+                        <Cpu size={16} className="text-brand-indigo" />
+                        STRATEGIC QUICK ACTIONS
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {[
+                          { 
+                            label: 'Website Audit', 
+                            desc: 'Identify conversion leaks', 
+                            icon: Layers, 
+                            url: 'https://docs.google.com/forms/d/e/1FAIpQLSd8uRsyJVbqqPmR1u3AEvQLj6QXn7klQ9KYTHMTGI2-t9N9Hw/viewform?usp=header' 
+                          },
+                          { 
+                            label: 'Growth Plan', 
+                            desc: 'Custom scaling strategies', 
+                            icon: TrendingUp, 
+                            url: 'https://docs.google.com/forms/d/e/1FAIpQLSd8uRsyJVbqqPmR1u3AEvQLj6QXn7klQ9KYTHMTGI2-t9N9Hw/viewform?usp=header' 
+                          },
+                          { 
+                            label: 'WhatsApp Strategy', 
+                            desc: 'Direct chatbot pathways', 
+                            icon: MessageSquare, 
+                            url: 'https://wa.me/919330457995?text=Hi%20BizAI,%20I%20want%20to%20know%20more%20about%20WhatsApp%20Strategy' 
+                          },
+                          { 
+                            label: 'Book Consultation', 
+                            desc: 'Connect with core experts', 
+                            icon: Phone, 
+                            url: 'https://wa.me/919330457995?text=Hi%20PCS%20Consultancy,%20I%20want%20to%20upgrade%20my%20AI%20automation%20system' 
+                          }
+                        ].map((act, idx) => {
+                          const IconComp = act.icon;
+                          return (
+                            <button
+                              key={`quick-act-${idx}`}
+                              onClick={() => window.open(act.url, '_blank')}
+                              className="bg-white/[0.02] border border-white/5 hover:border-brand-indigo/30 hover:bg-white/[0.06] transition-all p-4 rounded-xl text-left group/btn flex flex-col justify-between min-h-[90px] shadow-lg cursor-pointer relative overflow-hidden"
+                            >
+                              <div className="flex justify-between items-start w-full">
+                                <div className="p-2 bg-white/5 rounded-lg text-zinc-400 group-hover/btn:text-white transition-colors">
+                                  <IconComp size={16} />
+                                </div>
+                                <ChevronRight size={14} className="text-zinc-500 group-hover/btn:text-white transition-transform group-hover/btn:translate-x-0.5" />
+                              </div>
+                              <div>
+                                <span className="text-[11px] font-bold text-white uppercase tracking-wider block mt-2">{act.label}</span>
+                                <span className="text-[9px] text-zinc-500 font-bold block mt-0.5">{act.desc}</span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Column 3: Consultation CTA */}
+                  <div className="bg-white/5 border border-white/5 p-6 rounded-2xl shadow-xl backdrop-blur-sm flex flex-col justify-between relative overflow-hidden group/cta">
+                    {/* Glowing highlight */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand-emerald/10 via-transparent to-brand-indigo/5 opacity-50 group-hover/cta:opacity-70 transition-opacity pointer-events-none" />
+                    
+                    <div className="relative z-10 flex flex-col h-full justify-between gap-6">
+                      <div>
+                        <h3 className="text-[11px] font-bold text-white uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
+                          <Sparkles size={16} className="text-brand-emerald animate-pulse" />
+                          CONSULTATION DEPLOYMENT
+                        </h3>
+                        
+                        <h4 className="text-lg font-bold text-white tracking-tight mt-2 min-h-[50px] flex items-center">
+                          Ready to Grow Your Business?
+                        </h4>
+                        
+                        <p className="text-[11px] text-zinc-400 mt-2 leading-relaxed font-medium">
+                          Secure a premium 1-on-1 strategy call with our elite consultancy unit. We translate raw analytics matrices into direct operational revenue growth.
+                        </p>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3 bg-zinc-950/40 p-3 rounded-xl border border-white/5">
+                          <CheckCircle2 size={16} className="text-brand-emerald shrink-0" />
+                          <span className="text-[10px] text-zinc-300 font-medium">Free 45-Minute Strategic Mapping Node</span>
+                        </div>
+                        
+                        <motion.button
+                          whileHover={{ 
+                            scale: 1.02,
+                            boxShadow: "0 0 25px rgba(16, 185, 129, 0.4)"
+                          }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => window.open('https://wa.me/919330457995?text=Hi%20PCS%20Consultancy,%20I%20want%20to%20upgrade%20my%20AI%20automation%20system', '_blank')}
+                          className="w-full py-3 bg-brand-emerald text-zinc-950 hover:bg-emerald-400 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)] flex items-center justify-center gap-2 cursor-pointer focus:outline-none animate-bounce"
+                          style={{ animationDuration: '3s' }}
+                        >
+                          <Phone size={14} />
+                          <span>Book Free Consultation</span>
+                        </motion.button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </motion.div>
+
             {/* Latest Leads Table - Enhanced UI */}
             <div id="leads-table" className="mt-12 pt-8 border-t border-white/5">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-6">
@@ -1867,16 +2262,53 @@ Business analytics overview:
                             h2: ({ children }) => <h2 className="text-base font-serif italic font-bold text-white mt-6 mb-3">{children}</h2>,
                             h3: ({ children }) => <h3 className="text-sm font-bold text-zinc-200 mt-4 mb-2 uppercase tracking-tight">{children}</h3>,
                             p: ({ children }) => <p className="mb-3 last:mb-0 break-words-container">{children}</p>,
-                            a: ({ children, href }) => (
-                              <a 
-                                href={href} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="text-brand-indigo hover:underline font-bold break-all inline-block max-w-full"
-                              >
-                                {children}
-                              </a>
-                            ),
+                             a: ({ children, href }) => {
+                              const isForm = href && (href.includes('google.com/forms') || href.includes('docs.google.com/forms'));
+                              const isWA = href && href.includes('wa.me');
+
+                              if (isForm) {
+                                return (
+                                  <span className="block my-3">
+                                    <a 
+                                      href={href} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-brand-indigo hover:bg-indigo-600 text-white font-bold text-xs uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(99,102,241,0.25)] hover:shadow-[0_0_25px_rgba(99,102,241,0.5)] active:scale-95 cursor-pointer border border-brand-indigo/30"
+                                    >
+                                      <Sparkles size={14} className="animate-pulse text-indigo-200" />
+                                      <span>{children || "Fill Onboarding Form"}</span>
+                                    </a>
+                                  </span>
+                                );
+                              }
+
+                              if (isWA) {
+                                return (
+                                  <span className="block my-3">
+                                    <a 
+                                      href={href} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-brand-emerald hover:bg-emerald-500 text-zinc-950 font-black text-xs uppercase tracking-widest transition-all shadow-[0_0_15px_rgba(16,185,129,0.25)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] active:scale-95 cursor-pointer"
+                                    >
+                                      <Phone size={14} />
+                                      <span>{children || "Connect on WhatsApp"}</span>
+                                    </a>
+                                  </span>
+                                );
+                              }
+
+                              return (
+                                <a 
+                                  href={href} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  className="text-brand-indigo hover:underline font-bold break-all inline-block max-w-full"
+                                >
+                                  {children}
+                                </a>
+                              );
+                            },
                             strong: ({ children }) => <strong className="font-bold text-brand-indigo">{children}</strong>,
                             blockquote: ({ children }) => (
                               <blockquote className="border-l-2 border-brand-indigo/30 pl-4 py-1 italic text-zinc-400 my-4 bg-white/5">
@@ -1885,7 +2317,7 @@ Business analytics overview:
                             )
                           }}
                         >
-                          {msg.content.replace('[RETRY COMMAND](button:retry)', '')}
+                          {preprocessMessageContent(msg.content)}
                         </Markdown>
 
                         {msg.content.includes('button:retry') && (
