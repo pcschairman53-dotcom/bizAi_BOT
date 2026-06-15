@@ -166,7 +166,7 @@ function LeadPipelineOverview({ stats }: { stats: DashboardStats }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           {steps.map((step, i) => (
             <motion.div 
               key={`pipeline-step-${i}`}
@@ -260,7 +260,7 @@ function AiRecommendationEngine({ stats }: { stats: DashboardStats }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {recommendations.map((rec) => (
           <motion.div 
             key={`rec-item-${rec.id}`}
@@ -358,7 +358,7 @@ function BusinessOperationsCenter({ stats }: { stats: DashboardStats }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Module 1: Business Overview */}
           <div className="p-5 bg-white/5 border border-white/5 rounded-xl shadow-xl backdrop-blur-sm flex flex-col justify-between">
             <div>
@@ -416,7 +416,7 @@ function BusinessOperationsCenter({ stats }: { stats: DashboardStats }) {
           </div>
 
           {/* Module 3: Consultation CTA */}
-          <div className="p-5 bg-gradient-to-br from-brand-indigo/10 via-transparent to-brand-indigo/5 border border-white/5 rounded-xl shadow-xl flex flex-col justify-between relative overflow-hidden group/cta">
+          <div className="p-5 bg-gradient-to-br from-brand-indigo/10 via-transparent to-brand-indigo/5 border border-white/5 rounded-xl shadow-xl flex flex-col justify-between relative overflow-hidden group/cta md:col-span-2 lg:col-span-1">
             <div className="absolute inset-0 bg-gradient-to-br from-brand-indigo/5 via-transparent to-transparent opacity-50 pointer-events-none" />
             <div className="relative z-10 flex flex-col h-full justify-between gap-4">
               <div>
@@ -527,7 +527,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
       
       <AiRecommendationEngine stats={stats} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Lead Pipeline Status Breakdown */}
         <div className="lg:col-span-2 glass-card p-4 md:p-8 rounded-2xl shadow-2xl relative overflow-hidden group border-white/5">
           <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -545,7 +545,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
           </div>
           
           <div className="space-y-6 md:space-y-8">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4">
               {[
                 { label: 'New Nodes', count: stats.pipeline.new, color: 'text-zinc-400 bg-white/5' },
                 { label: 'Contacted', count: stats.pipeline.contacted, color: 'text-sky-400 bg-sky-500/10 shadow-[0_0_15px_rgba(14,165,233,0.1)]' },
@@ -714,7 +714,7 @@ function AdminDashboard({ stats, leads, activities, setMode, onUpdateStatus, isS
       </div>
 
       {/* Bottom Management Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 pb-12 md:pb-24">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 pb-12 md:pb-24">
         {/* Source Analytics */}
         <div className="bg-zinc-900 border border-zinc-800 p-6 rounded relative overflow-hidden group">
           <div className="flex items-center justify-between mb-6">
@@ -1785,7 +1785,7 @@ Business analytics overview:
                   ))}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* Activity Feed */}
                   <div className="lg:col-span-2 bg-white/5 border border-white/5 rounded-2xl p-6 shadow-xl backdrop-blur-sm">
                     <div className="flex items-center justify-between mb-6 border-b border-white/5 pb-4">
@@ -1933,7 +1933,7 @@ Business analytics overview:
                 </div>
 
                 {/* Grid Layout for modules */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   
                   {/* Column 1: Growth Score Card */}
                   <div className="bg-white/5 border border-white/5 p-6 rounded-2xl shadow-xl backdrop-blur-sm flex flex-col justify-between">
@@ -2046,7 +2046,7 @@ Business analytics overview:
                   </div>
 
                   {/* Column 3: Consultation CTA */}
-                  <div className="bg-white/5 border border-white/5 p-6 rounded-2xl shadow-xl backdrop-blur-sm flex flex-col justify-between relative overflow-hidden group/cta">
+                  <div className="bg-white/5 border border-white/5 p-6 rounded-2xl shadow-xl backdrop-blur-sm flex flex-col justify-between relative overflow-hidden group/cta md:col-span-2 lg:col-span-1">
                     {/* Glowing highlight */}
                     <div className="absolute inset-0 bg-gradient-to-br from-brand-emerald/10 via-transparent to-brand-indigo/5 opacity-50 group-hover/cta:opacity-70 transition-opacity pointer-events-none" />
                     
